@@ -103,14 +103,43 @@ async function api(path, body) {
 
 // ------------------------------------------------------------------ shell
 const LOGO_DIR = CFG.brand.logoSrc.replace(/[^/]+$/, '');
-const logo = (cls = '') => CFG.brand.logoAvailable
-  ? `<span class="logo ${cls}" role="img" aria-label="${CFG.brand.logoAlt}"><img class="logo__cat" src="${A(LOGO_DIR + 'nubik-gato.png')}" alt=""><img class="logo__word logo--normal" src="${A(LOGO_DIR + 'nubik-texto.png')}" alt=""><img class="logo__word logo--claro" src="${A(LOGO_DIR + 'nubik-texto-claro.png')}" alt=""></span>`
+const logo = (cls = '', awake = false) => CFG.brand.logoAvailable
+  ? `<span class="logo ${cls}" role="img" aria-label="${CFG.brand.logoAlt}">${awake
+      ? `<span class="logo__face"><img class="logo__cat" src="${A(LOGO_DIR + 'nubik-gato.png')}" alt=""><img class="logo__cat logo__cat--awake" src="${A(LOGO_DIR + 'nubik-gato-despierto.png')}" alt=""></span>`
+      : `<img class="logo__cat" src="${A(LOGO_DIR + 'nubik-gato.png')}" alt="">`}<img class="logo__word logo--normal" src="${A(LOGO_DIR + 'nubik-texto.png')}" alt=""><img class="logo__word logo--claro" src="${A(LOGO_DIR + 'nubik-texto-claro.png')}" alt=""></span>`
   : `<span class="brand__text ${cls}" title="Logo oficial pendiente de cargar en ${CFG.brand.logoSrc}">NUBIK</span>`;
 
 const NAV = [
   ['/', 'Inicio'], ['/#productos', 'Productos'], ['/combo-nubik', 'Combo'],
   ['/envios-y-garantias', 'Envíos y garantías'], ['/preguntas-frecuentes', 'Preguntas frecuentes'],
 ];
+
+// Gatito del pie de página: abre los ojos y dice un mensaje cuando el pie de página está a la vista.
+function mountMascot() {
+  const m = document.querySelector('.mascot');
+  if (!m || !m.querySelector('.logo__face') || !('IntersectionObserver' in window)) return;
+  const bubble = m.querySelector('.mascot__bubble');
+  const msgs = [
+    ['¡Miau! Envío gratis a toda Colombia 🐾', '/envios-y-garantias'],
+    ['¿Ya viste el Combo NUBIK? Juego + cuidado', '/combo-nubik'],
+    ['¿Dudas? ¡Escríbenos por WhatsApp!', waGeneral()],
+  ];
+  let i = 0, visible = false, timer = null;
+  const talk = () => {
+    const [text, href] = msgs[i++ % msgs.length];
+    const ext = href.startsWith('http');
+    bubble.textContent = text;
+    bubble.setAttribute('href', ext || !STATIC ? href : staticHref(href));
+    if (ext) { bubble.target = '_blank'; bubble.rel = 'noopener'; } else { bubble.removeAttribute('target'); bubble.removeAttribute('rel'); }
+    m.classList.add('is-awake');
+    setTimeout(() => m.classList.add('is-talking'), 250);
+    setTimeout(() => { m.classList.remove('is-talking'); setTimeout(() => m.classList.remove('is-awake'), 350); }, 4200);
+  };
+  new IntersectionObserver(es => {
+    visible = es[0].isIntersecting;
+    if (visible && !timer) { talk(); timer = setInterval(() => { if (visible) talk(); }, 8000); }
+  }, { threshold: .6 }).observe(m);
+}
 
 function waGeneral() { return waLink(WA, 'Hola NUBIK, tengo una consulta: '); }
 function waProduct(id, qty = 1) {
@@ -155,7 +184,10 @@ function renderShell() {
     <div class="wrap">
       <div class="footer__grid">
         <div>
-          <a class="brand" href="/" aria-label="NUBIK, ir al inicio">${logo()}</a>
+          <div class="mascot">
+            <a class="mascot__bubble" href="/combo-nubik" tabindex="-1" aria-hidden="true"></a>
+            <a class="brand" href="/" aria-label="NUBIK, ir al inicio">${logo('', true)}</a>
+          </div>
           <p class="footer__slogan">${CFG.brand.slogan}.</p>
           <p class="small">Productos para gatos y perros con envío gratis en ${CFG.brand.country}.</p>
         </div>
@@ -175,6 +207,7 @@ function renderShell() {
       </div>
       <div class="footer__bottom"><span>© ${new Date().getFullYear()} NUBIK · Colombia</span><span>Envío gratis · Sin pago contra entrega</span></div>
     </div>`;
+  mountMascot();
 
   const fab = document.createElement('a');
   fab.className = 'fab'; fab.href = waGeneral(); fab.target = '_blank'; fab.rel = 'noopener';

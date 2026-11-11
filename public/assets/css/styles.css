@@ -435,6 +435,19 @@ p { margin: 0 0 1em; }
 @media (min-width: 1024px) { .nav .logo { gap: 14px; } }
 .logo__cat { transform-origin: 50% 85%; animation: nube-flota 3.6s ease-in-out infinite; }
 .brand:hover .logo__cat { animation: nube-salta .7s ease-in-out; }
+/* gatito del pie de página: ojos que se abren + globo de mensaje */
+.mascot { position: relative; display: inline-block; }
+.logo__face { position: relative; display: inline-flex; }
+.logo__cat--awake { position: absolute; inset: 0; opacity: 0; transition: opacity .2s ease; }
+.mascot.is-awake .logo__cat--awake { opacity: 1; }
+.mascot__bubble { position: absolute; left: 34px; bottom: calc(100% + 12px); width: max-content; max-width: min(250px, 78vw);
+  background: #fff; color: var(--noche); font: 800 .9rem/1.3 var(--f-body); text-decoration: none; padding: 9px 14px;
+  border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,.25); opacity: 0; transform: translateY(8px) scale(.9);
+  transform-origin: 10% 100%; transition: opacity .25s ease, transform .3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; z-index: 2; }
+.mascot__bubble::after { content: ""; position: absolute; left: 14px; bottom: -7px; width: 14px; height: 14px; background: #fff; transform: rotate(45deg); border-radius: 0 0 4px 0; }
+.mascot.is-talking .mascot__bubble { opacity: 1; transform: none; pointer-events: auto; }
+.mascot__bubble:hover { background: var(--crema); }
+.mascot__bubble:hover::after { background: var(--crema); }
 .is-home .nav:not(.is-scrolled) .logo__cat, .footer .logo__cat { filter: drop-shadow(0 2px 8px rgba(0,0,0,.25)); }
 @keyframes nube-flota {
   0%, 100% { transform: translateY(0) rotate(0); }
@@ -472,7 +485,8 @@ p { margin: 0 0 1em; }
   .reveal { opacity: 1; transform: none; }
   .vhero__video { transition: opacity 1.1s ease !important; }
   .ribbon__track { animation: slide 32s linear infinite !important; }
-  .logo__cat { animation: nube-flota 3.6s ease-in-out infinite !important; } /* el gatito del logo también se mueve */ /* la cinta siempre se mueve, igual que los videos */
+  .logo__cat { animation: nube-flota 3.6s ease-in-out infinite !important; }
+  .logo__cat--awake, .mascot__bubble { transition: opacity .25s ease, transform .3s ease !important; } /* el gatito del logo también se mueve */ /* la cinta siempre se mueve, igual que los videos */
 }
 
 /* ---------- datos de transferencia ---------- */
