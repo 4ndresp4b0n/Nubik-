@@ -209,13 +209,17 @@ def build_email(order: dict, site_url: str) -> EmailMessage:
     c, p = order["customer"], order["priced"]
     lines = "\n".join(f"  • {l['name']} x{l['qty']} — {money(l['lineTotal'])}" for l in p["lines"])
     msg = EmailMessage()
-    msg["Subject"] = f"Nuevo pedido {order['id']} — {money(p['total'])} COP"
+    transfer = order.get("paymentMethodRequested") == "transferencia"
+    msg["Subject"] = (f"💸 Nuevo pedido por transferencia {order['id']} — {money(p['total'])} COP" if transfer
+                      else f"Nuevo pedido {order['id']} — {money(p['total'])} COP")
     msg["From"] = os.environ.get("SMTP_FROM") or os.environ["SMTP_USER"]
     msg["To"] = os.environ["NOTIFY_EMAIL"]
+    check = (f"Antes de despachar, revisa en Bancolombia que llegue una transferencia por {money(p['total'])} COP "
+             f"con la referencia {order['id']}.\n") if transfer else ""
     msg.set_content(
         f"Nuevo pedido en la tienda NUBIK\n\n"
         f"Pedido: {order['id']}\nFecha: {order['createdAt']}\n"
-        f"Pago: {order.get('paymentMethodRequested')} (pendiente de verificar)\n\n"
+        f"Pago: {order.get('paymentMethodRequested')} (pendiente de verificar)\n{check}\n"
         f"Productos:\n{lines}\nTotal: {money(p['total'])} COP (envío gratis)\n\n"
         f"Cliente: {c['nombre']}\nCelular: {c['celular']}\n"
         f"Entrega: {c['direccion']} {c.get('detalle', '')}, {c['ciudad']}, {c['departamento']}\n"
