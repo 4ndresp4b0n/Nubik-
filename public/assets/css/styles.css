@@ -429,6 +429,24 @@ p { margin: 0 0 1em; }
 /* sobre fondos oscuros (video de portada y pie de página): versión con la palabra NUBIK en blanco, sin fondo */
 .is-home .nav:not(.is-scrolled) .brand .logo--normal, .footer .brand .logo--normal { display: none; }
 .is-home .nav:not(.is-scrolled) .brand .logo--claro, .footer .brand .logo--claro { display: block; filter: drop-shadow(0 2px 8px rgba(0,0,0,.25)); }
+/* logo: gatito animado + palabra NUBIK */
+.logo { display: inline-flex; align-items: center; gap: 12px; }
+.footer .logo { gap: 14px; }
+@media (min-width: 1024px) { .nav .logo { gap: 14px; } }
+.logo__cat { transform-origin: 50% 85%; animation: nube-flota 3.6s ease-in-out infinite; }
+.brand:hover .logo__cat { animation: nube-salta .7s ease-in-out; }
+.is-home .nav:not(.is-scrolled) .logo__cat, .footer .logo__cat { filter: drop-shadow(0 2px 8px rgba(0,0,0,.25)); }
+@keyframes nube-flota {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  25% { transform: translateY(-3px) rotate(-4deg); }
+  50% { transform: translateY(0) rotate(0); }
+  75% { transform: translateY(-2px) rotate(4deg); }
+}
+@keyframes nube-salta {
+  0%, 100% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-7px) scale(1.06, .96); }
+  65% { transform: translateY(0) scale(.97, 1.03); }
+}
 .footer h4 { font: 700 .82rem/1 var(--f-body); letter-spacing: .14em; text-transform: uppercase; color: var(--nube); margin-bottom: 16px; }
 .footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
 .footer a { text-decoration: none; }
@@ -453,7 +471,8 @@ p { margin: 0 0 1em; }
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .reveal { opacity: 1; transform: none; }
   .vhero__video { transition: opacity 1.1s ease !important; }
-  .ribbon__track { animation: slide 32s linear infinite !important; } /* la cinta siempre se mueve, igual que los videos */
+  .ribbon__track { animation: slide 32s linear infinite !important; }
+  .logo__cat { animation: nube-flota 3.6s ease-in-out infinite !important; } /* el gatito del logo también se mueve */ /* la cinta siempre se mueve, igual que los videos */
 }
 
 /* ---------- datos de transferencia ---------- */

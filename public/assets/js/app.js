@@ -102,8 +102,9 @@ async function api(path, body) {
 }
 
 // ------------------------------------------------------------------ shell
+const LOGO_DIR = CFG.brand.logoSrc.replace(/[^/]+$/, '');
 const logo = (cls = '') => CFG.brand.logoAvailable
-  ? `<img src="${A(CFG.brand.logoSrc)}" alt="${CFG.brand.logoAlt}" class="logo--normal ${cls}"><img src="${A(CFG.brand.logoSrc.replace(/\.png$/, '-claro.png'))}" alt="" aria-hidden="true" class="logo--claro ${cls}">`
+  ? `<span class="logo ${cls}" role="img" aria-label="${CFG.brand.logoAlt}"><img class="logo__cat" src="${A(LOGO_DIR + 'nubik-gato.png')}" alt=""><img class="logo__word logo--normal" src="${A(LOGO_DIR + 'nubik-texto.png')}" alt=""><img class="logo__word logo--claro" src="${A(LOGO_DIR + 'nubik-texto-claro.png')}" alt=""></span>`
   : `<span class="brand__text ${cls}" title="Logo oficial pendiente de cargar en ${CFG.brand.logoSrc}">NUBIK</span>`;
 
 const NAV = [
