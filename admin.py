@@ -39,8 +39,20 @@ MAX_FAILS, FAIL_WINDOW = 10, 15 * 60
 
 # ---------------------------------------------------------------- acceso
 def password() -> str | None:
-    pw = os.environ.get("NUBIK_ADMIN_PASSWORD") or ""
+    pw = (os.environ.get("NUBIK_ADMIN_PASSWORD") or "").strip()
     return pw if len(pw) >= 10 else None
+
+
+def password_problem() -> str | None:
+    """Explica por qué el panel está desactivado, sin revelar la contraseña."""
+    raw = os.environ.get("NUBIK_ADMIN_PASSWORD")
+    if raw is None:
+        parecidas = [k for k in os.environ if "ADMIN" in k.upper() or "PASSWORD" in k.upper()]
+        extra = f" Variables con nombre parecido: {', '.join(repr(k) for k in parecidas)}." if parecidas else ""
+        return "la variable NUBIK_ADMIN_PASSWORD no existe en el servidor." + extra
+    if len(raw.strip()) < 10:
+        return f"NUBIK_ADMIN_PASSWORD tiene {len(raw.strip())} caracteres; se necesitan al menos 10."
+    return None
 
 
 def locked_out(ip: str) -> bool:

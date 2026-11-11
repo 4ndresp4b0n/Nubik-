@@ -554,7 +554,7 @@ def main():
         if SITE_URL.startswith(("http://127.0.0.1", "http://localhost")):
             print("AVISO: define SITE_URL con tu dominio (p. ej. https://nubik.com.co) para Google, el sitemap y las redes.")
         if not admin.password():
-            print("AVISO: panel de pedidos desactivado; define NUBIK_ADMIN_PASSWORD.")
+            print("AVISO: panel de pedidos desactivado:", admin.password_problem())
         try:
             DATA_DIR.mkdir(parents=True, exist_ok=True)
             (DATA_DIR / ".escritura").write_text("ok", encoding="utf-8")
