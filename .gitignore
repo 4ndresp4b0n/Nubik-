@@ -1,0 +1,11 @@
+data/
+__pycache__/
+*.pyc
+.env
+dist-preview/
+
+# archivos de prueba y respaldo local
+.escritura
+
+# datos privados (cuenta bancaria, costos, proveedor)
+config/private.json

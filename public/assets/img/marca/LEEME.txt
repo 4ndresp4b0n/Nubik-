@@ -1,0 +1,8 @@
+Coloca aquí el archivo ORIGINAL del logotipo de NUBIK con el nombre:
+
+    nubik-logo.png
+
+(PNG con fondo transparente, sin recortar ni deformar). El servidor lo detecta
+automáticamente y lo muestra en la barra superior, el menú móvil y el footer.
+Mientras no exista, la web muestra temporalmente el nombre "NUBIK" en texto.
+Si el logo es SVG o tiene otro nombre, cambia "logoSrc" en config/business.json.

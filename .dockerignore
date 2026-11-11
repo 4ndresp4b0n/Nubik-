@@ -1,0 +1,9 @@
+data/
+dist-preview/
+media-sin-usar/
+marca-original/
+tests/
+tools/
+__pycache__/
+*.pyc
+.git/

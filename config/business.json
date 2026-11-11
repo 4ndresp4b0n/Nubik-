@@ -1,0 +1,127 @@
+{
+  "_nota": "Configuración central de NUBIK. Las secciones 'internal' NUNCA se envían al navegador (el servidor solo publica 'public'). Edita aquí precios, contacto y condiciones.",
+
+  "public": {
+    "brand": {
+      "name": "NUBIK",
+      "slogan": "Suave como una nube, feliz como un gato",
+      "country": "Colombia",
+      "currency": "COP",
+      "logoSrc": "/assets/img/marca/nubik-logo.png",
+      "logoAlt": "NUBIK"
+    },
+    "contact": {
+      "whatsappNumber": "573184526653",
+      "whatsappDisplay": "+57 318 452 6653",
+      "whatsappUrl": "https://wa.me/573184526653",
+      "customerServiceEmail": null,
+      "_pendiente": "customerServiceEmail: correo oficial de atención de NUBIK aún no definido. Dirección comercial, redes sociales y razón social tampoco han sido proporcionados."
+    },
+    "shipping": {
+      "customerPrice": 0,
+      "label": "Envío gratis",
+      "carrier": null,
+      "estimates": [
+        { "zone": "Ciudades principales", "businessDays": "2–3 días hábiles" },
+        { "zone": "Resto del país", "businessDays": "5–6 días hábiles" }
+      ],
+      "dispatchSchedule": [
+        { "day": "Lunes a viernes", "rule": "Las órdenes recibidas hasta las 2:00 p. m. pueden procesarse para despacho durante la tarde del mismo día." },
+        { "day": "Sábados", "rule": "El proveedor genera guías a las 10:30 a. m. Se recomienda gestionar las órdenes antes de esa hora para intentar despacharlas el mismo día." },
+        { "day": "Domingos y festivos", "rule": "No se realizan despachos. Las órdenes se gestionan el siguiente día operativo." }
+      ],
+      "scheduleDisclaimer": "Horarios operativos informados por el proveedor, sujetos a confirmación con el proveedor y la transportadora. No constituyen una promesa de despacho el mismo día.",
+      "packaging": "Según información del proveedor, los productos delicados pueden enviarse protegidos con cartón y vinipel negro para ayudar a protegerlos de golpes o humedad durante el transporte. El proveedor indica que conserva registros fotográficos y de video del proceso de empaque para respaldar posibles incidencias."
+    },
+    "warranty": {
+      "status": "pendiente_confirmacion",
+      "supplierReportedDays": 15,
+      "summary": "El proveedor informa una cobertura comercial de 15 días desde la fecha de entrega, sujeta a condiciones que NUBIK está confirmando por escrito.",
+      "pendingConfirmation": [
+        "Que el período de 15 días aplique a ambos productos (pelota y guante).",
+        "Qué defectos están cubiertos.",
+        "Requisitos y documentación para solicitar una revisión.",
+        "Quién recibe y gestiona las reclamaciones.",
+        "Cómo se gestionan reparaciones, reemplazos o reembolsos cuando correspondan."
+      ]
+    },
+    "payments": {
+      "onlineEnabled": false,
+      "provider": null,
+      "cashOnDelivery": false,
+      "methods": [
+        { "id": "transferencia", "label": "Transferencia bancaria", "status": "pendiente_habilitacion" },
+        { "id": "tarjeta", "label": "Tarjeta", "status": "pendiente_habilitacion" }
+      ],
+      "notice": "Los pagos online están pendientes de habilitación. Puedes registrar tu solicitud de pedido y coordinar el pago con nuestro equipo por WhatsApp. Ningún pedido se considera pagado ni confirmado hasta que NUBIK lo confirme."
+    },
+    "limits": { "maxQtyPerItem": 10 }
+  },
+
+  "bankTransfer": {
+    "_nota": "Los datos reales de la cuenta NO están en este archivo: van en config/private.json (local, no se sube) o en variables de entorno BANK_* del hosting. Solo se muestran al cliente después de registrar su pedido.",
+    "bank": null,
+    "accountType": "Ahorros",
+    "accountNumber": null,
+    "holder": null,
+    "holderId": null
+  },
+
+  "products": {
+    "pelota-interactiva": {
+      "sku": "NBK-PELOTA",
+      "name": "Pelota interactiva NUBIK",
+      "shortName": "Pelota interactiva",
+      "path": "/productos/pelota-interactiva",
+      "price": 59900,
+      "sellableAlone": true,
+      "type": "product",
+      "image": "/assets/img/productos/pelota-frontal-960.webp"
+    },
+    "guante-quitapelos": {
+      "sku": "NBK-GUANTE",
+      "name": "Guante quitapelos NUBIK",
+      "shortName": "Guante quitapelos",
+      "path": "/combo-nubik",
+      "price": null,
+      "sellableAlone": false,
+      "type": "component",
+      "image": "/assets/img/productos/guante-mano-960.webp"
+    },
+    "combo-nubik": {
+      "sku": "NBK-COMBO",
+      "name": "Combo NUBIK: pelota interactiva + guante quitapelos",
+      "shortName": "Combo NUBIK",
+      "path": "/combo-nubik",
+      "price": 89900,
+      "sellableAlone": true,
+      "type": "bundle",
+      "includes": [
+        { "id": "pelota-interactiva", "qty": 1 },
+        { "id": "guante-quitapelos", "qty": 1 }
+      ],
+      "image": "/assets/img/productos/pelota-gato-960.webp"
+    }
+  },
+
+  "internal": {
+    "_nota": "Datos internos. Los costos y el flete reales van en config/private.json o en variables de entorno (COSTO_PELOTA, COSTO_GUANTE, FLETE_ESTIMADO). No se publican. Márgenes previos a comisiones, publicidad, impuestos, devoluciones y otros gastos: NO son utilidad neta.",
+    "estimatedFreightPerOrder": null,
+    "freightIsEstimate": true,
+    "supplierCosts": {
+      "pelota-interactiva": null,
+      "guante-quitapelos": null
+    },
+    "variableCosts": {
+      "paymentGatewayPercent": null,
+      "paymentGatewayFixed": null,
+      "adsPerOrder": null,
+      "packagingPerOrder": null
+    },
+    "inventory": {
+      "pelota-interactiva": null,
+      "guante-quitapelos": null,
+      "_nota": "null = inventario no informado. La web muestra 'Disponibilidad por confirmar' y no limita por stock."
+    }
+  }
+}
