@@ -15,13 +15,13 @@ const STATIC = BOOT.static === true;
 const A = p => STATIC ? p.replace(/^\//, '') : p;
 const IMG = A('/assets/img/productos/');
 const ROUTE_HASH = {
-  '/': '', '/productos/pelota-interactiva': 'pelota-interactiva', '/combo-nubik': 'combo-nubik',
+  '/': '', '/productos/pelota-interactiva': 'pelota-interactiva', '/combo-nubik': 'combo-nubik', '/duo-pelotas': 'duo-pelotas',
   '/carrito': 'carrito', '/checkout': 'finalizar-pedido', '/preguntas-frecuentes': 'preguntas-frecuentes',
   '/envios-y-garantias': 'envios-y-garantias', '/privacidad': 'privacidad', '/terminos': 'terminos',
   '/cambios-y-devoluciones': 'cambios-y-devoluciones',
 };
 const HASH_ROUTE = Object.fromEntries(Object.entries(ROUTE_HASH).map(([p, h]) => [h, p]));
-const SECTION_ROUTE = { productos: '/', combo: '/', momentos: '/', garantia: '/envios-y-garantias' };
+const SECTION_ROUTE = { productos: '/', combo: '/', opciones: '/', momentos: '/', garantia: '/envios-y-garantias' };
 function staticHref(href) {
   const url = new URL(href, 'http://x');
   let path = url.pathname.replace(/\/+$/, '') || '/';
@@ -195,6 +195,7 @@ function renderShell() {
         <div><h4>Tienda</h4><ul>
           <li><a href="/productos/pelota-interactiva">Pelota interactiva</a></li>
           <li><a href="/combo-nubik">Combo NUBIK</a></li>
+          <li><a href="/duo-pelotas">Dúo de pelotas</a></li>
           <li><a href="/carrito">Carrito</a></li></ul></div>
         <div><h4>Ayuda</h4><ul>
           <li><a href="/envios-y-garantias">Envíos</a></li>
@@ -235,7 +236,39 @@ function toast(msg, withCart = false) {
 }
 
 // ------------------------------------------------------------------ piezas reutilizables
-const ball = PRODUCTS['pelota-interactiva'], combo = PRODUCTS['combo-nubik'];
+const ball = PRODUCTS['pelota-interactiva'], combo = PRODUCTS['combo-nubik'], duo = PRODUCTS['duo-pelotas'];
+const INCLUDES_TEXT = { 'combo-nubik': 'Incluye pelota + cargador y guante quitapelos', 'duo-pelotas': 'Incluye 2 pelotas, cada una con su cargador' };
+const ADD_LABEL = { 'combo-nubik': 'Quiero el combo', 'duo-pelotas': 'Quiero el dúo' };
+const COMBO_EXTRA = combo.price - ball.price;          // lo que cuesta sumar el guante
+const DUO_SAVING = ball.price * 2 - duo.price;         // ahorro real frente a 2 pelotas sueltas
+
+// Tarjetas para elegir entre las tres opciones (sin descuentos inventados: solo diferencias reales de precio)
+function choiceCards() {
+  const card = (p, tag, text, hi) => `
+    <article class="choice${hi ? ' choice--hi' : ''} reveal">
+      ${tag ? `<span class="choice__tag">${tag}</span>` : ''}
+      <a class="choice__img" href="${p.path}">${img(p.image.split('/').pop().replace('-960.webp', ''), p.name, { w: 480 })}</a>
+      <h3>${p.shortName}</h3>
+      <p class="choice__price">${money(p.price)} <small>COP</small></p>
+      <p class="choice__text">${text}</p>
+      <div class="choice__btns"><button class="btn${hi ? ' btn--nube' : ''}" data-add="${p.id}">${icon('bag')} ${ADD_LABEL[p.id] || 'Añadir al carrito'}</button>
+      <a class="link" href="${p.path}">Ver detalles</a></div>
+    </article>`;
+  return `<div class="choices">
+    ${card(ball, '', 'Una pelota interactiva con su cargador.')}
+    ${card(combo, 'Recomendado', `Pelota + guante quitapelos. Por ${money(COMBO_EXTRA)} más que la pelota sola.`, true)}
+    ${card(duo, 'Para 2 gatos', `Dos pelotas con su cargador. Ahorras ${money(DUO_SAVING)} frente a comprar 2 por separado.`)}
+  </div>`;
+}
+
+// Sugerencias en la ficha de la pelota
+function upsell() {
+  const card = (p, title, text) => `<a class="upsell__card" href="${p.path}">${img(p.image.split('/').pop().replace('-960.webp', ''), '', { w: 480, sizes: '72px' })}<span><strong>${title}</strong><span>${text}</span></span>${icon('arrow')}</a>`;
+  return `<div class="upsell">
+    ${card(combo, `Combo NUBIK · ${money(combo.price)}`, `Por ${money(COMBO_EXTRA)} más llevas también el guante quitapelos.`)}
+    ${card(duo, `Dúo de pelotas · ${money(duo.price)}`, `¿Tienes dos gatos? Ahorras ${money(DUO_SAVING)} frente a comprar 2 por separado.`)}
+  </div>`;
+}
 const freeShip = `<span class="ship-note">${icon('truck')} ${CFG.shipping.label}</span>`;
 const availability = p => p.availability === 'disponible'
   ? '<span class="stock stock--ok">Disponible</span>'
@@ -332,8 +365,8 @@ views['/'] = () => `
       <h1 class="vhero__title">Pequeños momentos.<br><span>Grandes ronroneos.</span></h1>
       <p class="vhero__lead">Descubre nuevas formas de acompañar el juego y el cuidado de tu mascota con NUBIK.</p>
       <div class="btn-row vhero__btns">
-        <a class="btn btn--nube" href="/productos/pelota-interactiva">Descubrir la pelota</a>
-        <a class="btn btn--ghost-light" href="/combo-nubik">Conocer el combo</a>
+        <a class="btn btn--nube" href="/combo-nubik">Ver el combo</a>
+        <a class="btn btn--ghost-light" href="/productos/pelota-interactiva">Descubrir la pelota</a>
       </div>
       <div class="vhero__feats"><span>Se mueve sola</span><span>3 modos</span><span>Cargador incluido</span><span>Envío gratis</span></div>
     </div>
@@ -384,7 +417,15 @@ views['/'] = () => `
     </div>
   </section>
 
-  <section class="section section--white" id="momentos">
+  <section class="section section--white" id="opciones">
+    <div class="wrap center">
+      <span class="eyebrow">Elige tu opción</span>
+      <h2 class="h2 reveal">¿Cuál es para tu peludo?</h2>
+      ${choiceCards()}
+    </div>
+  </section>
+
+  <section class="section" id="momentos">
     <div class="wrap">
       <span class="eyebrow">Momentos NUBIK</span>
       <h2 class="h2 reveal" style="max-width:16ch">Juego y cuidado, todos los días</h2>
@@ -467,6 +508,12 @@ function productPage({ id, crumbs, eyebrow, title, intro, body, gallery }) {
   <div class="wrap">
     <nav class="crumbs" aria-label="Ruta de navegación"><a href="/">Inicio</a> / ${crumbs}</nav>
     <div class="pdp">
+      <div class="pdp__head">
+        <span class="eyebrow">${eyebrow}</span>
+        <h1>${title}</h1>
+        <div class="price-row"><span class="price">${money(p.price)}<small>COP</small></span>${freeShip}</div>
+        ${availability(p)}
+      </div>
       <div class="gallery" data-gallery>
         <div class="gallery__main ${gallery[0][2] ? 'is-photo' : ''}" id="gmain">${img(gallery[0][0], gallery[0][1], { eager: true, sizes: '(min-width: 960px) 620px, 92vw' })}</div>
         <div class="gallery__thumbs" role="group" aria-label="Imágenes del producto">
@@ -474,15 +521,11 @@ function productPage({ id, crumbs, eyebrow, title, intro, body, gallery }) {
         </div>
       </div>
       <div class="pdp__info">
-        <span class="eyebrow">${eyebrow}</span>
-        <h1>${title}</h1>
-        <div class="price-row"><span class="price">${money(p.price)}<small>COP</small></span>${freeShip}</div>
-        ${availability(p)}
-        <p class="lead" style="margin-top:16px">${intro}</p>
+        <p class="lead">${intro}</p>
         <div class="buy">
           <div class="buy__row">
             <div class="qty" data-qty><button type="button" data-d="-1" aria-label="Restar una unidad">${icon('minus')}</button><output aria-live="polite" aria-label="Cantidad">1</output><button type="button" data-d="1" aria-label="Sumar una unidad">${icon('plus')}</button></div>
-            <button class="btn" data-add="${id}" data-with-qty>${icon('bag')} ${id === 'combo-nubik' ? 'Quiero el combo' : 'Añadir al carrito'}</button>
+            <button class="btn" data-add="${id}" data-with-qty>${icon('bag')} ${ADD_LABEL[id] || 'Añadir al carrito'}</button>
           </div>
           <a class="btn btn--ghost btn--block" data-wa-product="${id}" href="${waProduct(id)}" target="_blank" rel="noopener">${icon('chat')} Consultar por WhatsApp</a>
         </div>
@@ -493,6 +536,10 @@ function productPage({ id, crumbs, eyebrow, title, intro, body, gallery }) {
         ${body}
       </div>
     </div>
+  </div>
+  <div class="stickybuy" aria-hidden="true">
+    <div class="stickybuy__txt"><strong>${p.shortName}</strong><span>${money(p.price)} COP · Envío gratis</span></div>
+    <button class="btn btn--sm" data-add="${id}" tabindex="-1">${icon('bag')} ${id === 'pelota-interactiva' ? 'Añadir' : ADD_LABEL[id].replace('Quiero el', 'Quiero el')}</button>
   </div>`;
 }
 
@@ -512,6 +559,7 @@ views['/productos/pelota-interactiva'] = () => productPage({
     ['real-pelota-alfombra', 'Fotografía real de la pelota sobre una alfombra', true],
   ],
   body: `
+    ${upsell()}
     <div class="notice notice--info">${icon('battery')}<span><strong>Recuerda cargarla antes de usarla:</strong> el cargador viene incluido en la caja.</span></div>
     <div class="tabs-block">
       <h2 class="h3">Características</h2>
@@ -529,7 +577,6 @@ views['/productos/pelota-interactiva'] = () => productPage({
         <div><dt>Color</dt><dd>Azul</dd></div>
       </dl>
       <p class="muted small">Especificaciones informadas por el proveedor.</p>
-      <p class="muted small">¿Prefieres llevarla con el guante quitapelos? <a class="link" href="/combo-nubik">Conoce el Combo NUBIK por ${money(combo.price)} COP</a>.</p>
     </div>
     <div class="tabs-block">
       <h2 class="h3">Preguntas frecuentes</h2>
@@ -542,6 +589,7 @@ views['/combo-nubik'] = () => productPage({
   title: 'Combo NUBIK: pelota interactiva + guante quitapelos',
   intro: 'Dos formas de cuidar sus momentos: la pelota interactiva para jugar y el guante quitapelos para ayudar a retirar el pelo suelto de perros y gatos.',
   gallery: [
+    ['combo-nubik', 'Combo NUBIK: pelota interactiva y guante quitapelos'],
     ['vida-gato-guante', 'Gato relajado mientras lo cepillan con el guante quitapelos NUBIK', true],
     ['vida-gato-pelota', 'Gato atrapando la pelota interactiva NUBIK', true],
     ['vida-perro-guante', 'Perro cepillado con el guante quitapelos NUBIK', true],
@@ -589,6 +637,42 @@ views['/combo-nubik'] = () => productPage({
     </div>`,
 });
 
+views['/duo-pelotas'] = () => productPage({
+  id: 'duo-pelotas', crumbs: '<span>Dúo de pelotas</span>', eyebrow: 'Para hogares con 2 gatos',
+  title: 'Dúo de pelotas interactivas NUBIK',
+  intro: 'Dos pelotas interactivas, cada una con su cargador: para que jueguen dos gatos a la vez, o para tener una lista mientras la otra se carga.',
+  gallery: [
+    ['duo-pelotas', 'Dos pelotas interactivas NUBIK azules'],
+    ['gatito-pelota', 'Gatito naranja persiguiendo la pelota interactiva NUBIK', true],
+    ['vida-gato-pelota', 'Gato atrapando la pelota interactiva NUBIK en la sala', true],
+    ['pelota-frontal', 'Pelota interactiva NUBIK azul'],
+    ['real-pelota-palma', 'Fotografía real de la pelota en la palma de la mano', true],
+    ['real-pelota-alfombra', 'Fotografía real de la pelota sobre una alfombra', true],
+  ],
+  body: `
+    <div class="notice notice--info">${icon('sparkle')}<span><strong>Ahorras ${money(DUO_SAVING)}</strong> frente a comprar 2 pelotas por separado (${money(ball.price * 2)} COP).</span></div>
+    <div class="notice notice--info">${icon('battery')}<span><strong>Recuerda cargarlas antes de usarlas:</strong> cada pelota trae su cargador.</span></div>
+    <div class="tabs-block">
+      <h2 class="h3">Qué incluye</h2>
+      <ul class="spec">
+        <li>${icon('check')} <span><strong>2 pelotas interactivas NUBIK</strong>: se mueven solas y tienen tres modos de funcionamiento.</span></li>
+        <li>${icon('check')} <span><strong>2 cargadores</strong>, uno por pelota.</span></li>
+      </ul>
+      <h2 class="h3" style="margin-top:22px">Especificaciones de cada pelota</h2>
+      <dl class="specs">
+        <div><dt>Tamaño</dt><dd>4 × 4 × 4 cm</dd></div>
+        <div><dt>Peso</dt><dd>50 g</dd></div>
+        <div><dt>Material</dt><dd>Goma</dd></div>
+        <div><dt>Color</dt><dd>Azul</dd></div>
+      </dl>
+      <p class="muted small">Especificaciones informadas por el proveedor. ¿Prefieres pelota + guante quitapelos? <a class="link" href="/combo-nubik">Mira el Combo NUBIK por ${money(combo.price)} COP</a>.</p>
+    </div>
+    <div class="tabs-block">
+      <h2 class="h3">Preguntas frecuentes</h2>
+      ${faqList(faqs(CFG, PRODUCTS).filter((_, i) => [0, 1, 2, 6].includes(i)).concat(faqs(CFG, PRODUCTS).slice(-1)))}
+    </div>`,
+});
+
 views['/carrito'] = () => `
   <div class="wrap">
     <div class="page-head"><span class="eyebrow">Tu compra</span><h1>Carrito</h1></div>
@@ -606,7 +690,7 @@ function cartHTML(priced, err) {
     return `<article class="line">
       <img src="${A(p.image.replace('-960', '-480'))}" alt="" loading="lazy">
       <div><h3><a href="${p.path}" style="text-decoration:none">${p.name}</a></h3>
-        <div class="line__meta">${money(p.price)} COP c/u${p.type === 'bundle' ? ' · Incluye pelota + cargador y guante quitapelos' : ' · Cargador incluido'}</div>
+        <div class="line__meta">${money(p.price)} COP c/u${INCLUDES_TEXT[i.id] ? ' · ' + INCLUDES_TEXT[i.id] : ' · Cargador incluido'}</div>
         <div class="line__ctrl">
           <div class="qty qty--sm" data-line="${i.id}"><button type="button" data-d="-1" ${i.qty <= 1 ? 'disabled' : ''} aria-label="Restar una unidad de ${p.shortName}">${icon('minus')}</button><output aria-label="Cantidad">${i.qty}</output><button type="button" data-d="1" ${i.qty >= MAXQ ? 'disabled' : ''} aria-label="Sumar una unidad de ${p.shortName}">${icon('plus')}</button></div>
           <span class="line__total">${money(sl ? sl.lineTotal : p.price * i.qty)}</span>
@@ -963,6 +1047,17 @@ function render(first = false) {
 
 function bindView(root) {
   let qty = 1;
+  document.body.classList.remove('has-sticky');
+  const sticky = root.querySelector('.stickybuy'), buy = root.querySelector('.buy');
+  if (sticky && buy && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => {
+      const on = !e.isIntersecting;
+      sticky.classList.toggle('is-on', on);
+      sticky.setAttribute('aria-hidden', String(!on));
+      sticky.querySelector('button').tabIndex = on ? 0 : -1;
+      document.body.classList.toggle('has-sticky', on);
+    }).observe(buy);
+  }
   root.querySelectorAll('[data-qty]').forEach(q => {
     const out = q.querySelector('output');
     const minus = q.querySelector('[data-d="-1"]');

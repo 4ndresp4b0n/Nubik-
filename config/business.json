@@ -100,7 +100,20 @@
         { "id": "pelota-interactiva", "qty": 1 },
         { "id": "guante-quitapelos", "qty": 1 }
       ],
-      "image": "/assets/img/productos/pelota-gato-960.webp"
+      "image": "/assets/img/productos/combo-nubik-960.webp"
+    },
+    "duo-pelotas": {
+      "sku": "NBK-DUO",
+      "name": "Dúo de pelotas interactivas NUBIK",
+      "shortName": "Dúo de pelotas",
+      "path": "/duo-pelotas",
+      "price": 80000,
+      "sellableAlone": true,
+      "type": "bundle",
+      "includes": [
+        { "id": "pelota-interactiva", "qty": 2 }
+      ],
+      "image": "/assets/img/productos/duo-pelotas-960.webp"
     }
   },
 

@@ -269,6 +269,8 @@ ROUTES = {
           "Juguete para gatos que se mueve solo, con tres modos de funcionamiento. Recargable, cargador incluido en la caja. Envío gratis en Colombia."),
     "/combo-nubik": ("Combo NUBIK: pelota interactiva + guante quitapelos | $89.900 COP",
           "Pelota interactiva para gatos y guante quitapelos para perros y gatos en un solo combo. Envío gratis a toda Colombia."),
+    "/duo-pelotas": ("Dúo de pelotas interactivas para gatos NUBIK | $80.000 COP",
+          "Dos pelotas interactivas para gatos que se mueven solas, cada una con su cargador. Ideal para hogares con dos gatos. Envío gratis en Colombia."),
     "/carrito": ("Carrito | NUBIK", "Revisa los productos de tu carrito NUBIK."),
     "/checkout": ("Finalizar pedido | NUBIK", "Registra tu solicitud de pedido NUBIK."),
     "/preguntas-frecuentes": ("Preguntas frecuentes | NUBIK",
@@ -286,6 +288,8 @@ REDIRECTS = {
     "/guante-quitapelos": "/combo-nubik",
     "/productos": "/#productos",
     "/combo": "/combo-nubik",
+    "/duo": "/duo-pelotas",
+    "/2-pelotas": "/duo-pelotas",
 }
 
 
@@ -296,7 +300,8 @@ def json_ld(cfg: dict, path: str) -> list:
                             "contactType": "customer service", "areaServed": "CO",
                             "availableLanguage": "es"}}
     data = [org] if path == "/" else []
-    pid = {"/productos/pelota-interactiva": "pelota-interactiva", "/combo-nubik": "combo-nubik"}.get(path)
+    pid = {"/productos/pelota-interactiva": "pelota-interactiva", "/combo-nubik": "combo-nubik",
+           "/duo-pelotas": "duo-pelotas"}.get(path)
     if pid:
         p = cfg["products"][pid]
         offer = {"@type": "Offer", "price": str(p["price"]), "priceCurrency": "COP",

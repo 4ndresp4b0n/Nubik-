@@ -33,6 +33,17 @@ class Reglas(unittest.TestCase):
         r = server.price_cart(CFG, [{"id": "combo-nubik", "qty": 1}])
         self.assertEqual(r["total"], 89900)
 
+    def test_duo_de_pelotas(self):
+        r = server.price_cart(CFG, [{"id": "duo-pelotas", "qty": 1}])
+        self.assertEqual(r["total"], 80000)
+        self.assertEqual(server.component_units(CFG, "duo-pelotas", 2), {"pelota-interactiva": 4})
+        m = server.internal_margin(CFG, r)
+        self.assertEqual(m["productCost"], 2 * int(FAKE["COSTO_PELOTA"]))
+        cfg = json.loads(json.dumps(CFG))
+        cfg["internal"]["inventory"] = {"pelota-interactiva": 3, "guante-quitapelos": 5}
+        with self.assertRaises(server.OrderError):  # 2 dúos = 4 pelotas > 3
+            server.price_cart(cfg, [{"id": "duo-pelotas", "qty": 2}])
+
     def test_subtotales_y_total(self):
         r = server.price_cart(CFG, [{"id": "pelota-interactiva", "qty": 2}, {"id": "combo-nubik", "qty": 3}])
         self.assertEqual(r["subtotal"], 2 * 59900 + 3 * 89900)
@@ -150,6 +161,12 @@ class API(unittest.TestCase):
             self.assertNotIn("{{", body, p)
             for secreto in (FAKE["COSTO_PELOTA"], FAKE["COSTO_GUANTE"], FAKE["FLETE_ESTIMADO"], FAKE["BANK_ACCOUNT_NUMBER"]):
                 self.assertNotIn(secreto, body, (p, secreto))
+
+    def test_ruta_duo(self):
+        s, body, _ = self.req("/duo-pelotas")
+        self.assertEqual(s, 200)
+        self.assertIn('"price": "80000"', body)
+        self.assertIn("Dúo de pelotas", body)
 
     def test_404(self):
         self.assertEqual(self.req("/no-existe")[0], 404)

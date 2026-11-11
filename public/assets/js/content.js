@@ -28,6 +28,8 @@ export function faqs(cfg, products) {
       a: `<p>Escríbenos por WhatsApp al <a class="link" href="${cfg.contact.whatsappUrl}" target="_blank" rel="noopener">${cfg.contact.whatsappDisplay}</a> e indícanos tu número de solicitud (empieza por NBK-).</p>` },
     { q: '¿Cómo funciona la garantía?',
       a: `<p>${cfg.warranty.summary} Mientras publicamos la política definitiva, si tu producto presenta un problema escríbenos por WhatsApp y te indicaremos el procedimiento.</p><p>Esta cobertura comercial no limita los derechos de garantía que te reconoce la ley colombiana como consumidor.</p><p><a class="link" href="/envios-y-garantias#garantia">Ver detalles</a></p>` },
+    { q: '¿Qué incluye el Dúo de pelotas?',
+      a: `<p>Dos pelotas interactivas NUBIK, cada una con su cargador, por ${money(products['duo-pelotas'].price)} COP con envío gratis. Es ideal si tienes dos gatos o si quieres tener una pelota lista mientras la otra se carga.</p>` },
   ];
 }
 
@@ -59,7 +61,7 @@ export function legal(page, cfg, products) {
       <h2>1. Identificación</h2>
       <p>Tienda online NUBIK — [razón social, NIT y domicilio — pendientes].</p>
       <h2>2. Productos y precios</h2>
-      <p>Los precios se expresan en pesos colombianos (COP). Pelota interactiva NUBIK: ${money(products['pelota-interactiva'].price)} COP. Combo NUBIK (pelota interactiva + guante quitapelos): ${money(products['combo-nubik'].price)} COP. El guante quitapelos no se vende individualmente. [Tratamiento de impuestos — pendiente de confirmar].</p>
+      <p>Los precios se expresan en pesos colombianos (COP). Pelota interactiva NUBIK: ${money(products['pelota-interactiva'].price)} COP. Combo NUBIK (pelota interactiva + guante quitapelos): ${money(products['combo-nubik'].price)} COP. Dúo de pelotas interactivas (2 pelotas, cada una con su cargador): ${money(products['duo-pelotas'].price)} COP. El guante quitapelos no se vende individualmente. [Tratamiento de impuestos — pendiente de confirmar].</p>
       <h2>3. Proceso de compra</h2>
       <p>Al finalizar el formulario registras una <strong>solicitud de pedido</strong>. La solicitud no implica pago ni confirmación: el pedido se considera confirmado únicamente cuando NUBIK verifica el pago y te lo comunica. Los pagos online están pendientes de habilitación. No se ofrece pago contra entrega.</p>
       <h2>4. Envíos</h2>
