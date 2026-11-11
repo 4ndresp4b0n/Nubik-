@@ -120,9 +120,10 @@ function mountMascot() {
   if (!m || !m.querySelector('.logo__face') || !('IntersectionObserver' in window)) return;
   const bubble = m.querySelector('.mascot__bubble');
   const msgs = [
-    ['¡Miau! Envío gratis a toda Colombia 🐾', '/envios-y-garantias'],
-    ['¿Ya viste el Combo NUBIK? Juego + cuidado', '/combo-nubik'],
-    ['¿Dudas? ¡Escríbenos por WhatsApp!', waGeneral()],
+    ['Miau… ¿hoy jugaste conmigo? Te estaba esperando 🐾', '/productos/pelota-interactiva'],
+    ['Cuando me cepillas, siento que me quieres un poquito más 💙', '/combo-nubik'],
+    ['Gracias por cuidarme tanto. Yo también te cuido a mi manera', '/combo-nubik'],
+    ['¿Tienes dudas? Aquí estamos para ayudarte 💬', waGeneral()],
   ];
   let i = 0, visible = false, timer = null;
   const talk = () => {
