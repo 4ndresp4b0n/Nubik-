@@ -22,8 +22,10 @@ export function faqs(cfg, products) {
       a: `<p>Los tiempos son estimados y se cuentan en días hábiles desde el despacho: ${est}. La fecha exacta de entrega depende de la transportadora, por eso no podemos garantizarla.</p><p><a class="link" href="/envios-y-garantias">Ver horarios de despacho</a></p>` },
     { q: '¿El envío tiene algún costo?',
       a: `<p>No. El envío es gratis para ti: NUBIK asume su costo.</p>` },
-    { q: '¿Qué medios de pago estarán disponibles?',
-      a: `<p>Están previstos transferencia bancaria y tarjeta. <strong>Los pagos online todavía están pendientes de habilitación</strong>; mientras tanto puedes registrar tu solicitud de pedido y coordinar el pago por WhatsApp. No ofrecemos pago contra entrega.</p>` },
+    { q: cfg.payments.transferReady ? '¿Qué medios de pago aceptan?' : '¿Qué medios de pago estarán disponibles?',
+      a: cfg.payments.transferReady
+        ? `<p>Por ahora recibimos pagos por <strong>transferencia bancaria</strong>: al registrar tu pedido te mostramos los datos de la cuenta y el valor exacto. Tu pedido se confirma cuando verificamos el pago. No ofrecemos pago contra entrega.</p>`
+        : `<p>Están previstos transferencia bancaria y tarjeta. <strong>Los pagos online todavía están pendientes de habilitación</strong>; mientras tanto puedes registrar tu solicitud de pedido y coordinar el pago por WhatsApp. No ofrecemos pago contra entrega.</p>` },
     { q: '¿Cómo puedo consultar sobre mi pedido?',
       a: `<p>Escríbenos por WhatsApp al <a class="link" href="${cfg.contact.whatsappUrl}" target="_blank" rel="noopener">${cfg.contact.whatsappDisplay}</a> e indícanos tu número de solicitud (empieza por NBK-).</p>` },
     { q: '¿Cómo funciona la garantía?',

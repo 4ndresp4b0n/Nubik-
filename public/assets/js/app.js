@@ -306,7 +306,7 @@ function trustCards() {
   return `<div class="trust">
     <div class="tcard tcard--hi">${icon('truck')}<h3>Envío gratis</h3><p>No pagas envío. NUBIK asume su costo en todos los pedidos.</p></div>
     <div class="tcard">${icon('clock')}<h3>Entrega estimada</h3><p>${CFG.shipping.estimates.map(e => `${e.zone}: <strong>${e.businessDays}</strong>`).join('<br>')}.</p></div>
-    <div class="tcard">${icon('card')}<h3>Medios de pago</h3>${TRANSFER ? '<p>Transferencia bancaria. Te damos los datos de la cuenta al hacer tu pedido.</p><span class="pill-pending">Tarjeta: próximamente</span>' : `<p>${CFG.payments.methods.map(m => m.label).join(' y ')}.</p><span class="pill-pending">Pendientes de habilitación</span>`}</div>
+    <div class="tcard">${icon('card')}<h3>Medios de pago</h3>${TRANSFER ? '<p>Transferencia bancaria. Te damos los datos de la cuenta al hacer tu pedido.</p>' : `<p>${CFG.payments.methods.map(m => m.label).join(' y ')}.</p><span class="pill-pending">Pendientes de habilitación</span>`}</div>
     <div class="tcard">${icon('chat')}<h3>Atención por WhatsApp</h3><p>Resolvemos tus dudas antes y después de tu compra en el ${CFG.contact.whatsappDisplay}.</p></div>
   </div>`;
 }
@@ -349,7 +349,7 @@ function mountHero() {
 // Estado real de los medios de pago (la transferencia se activa al completar sus datos en config)
 const TRANSFER = !!CFG.payments.transferReady;
 const payLine = () => TRANSFER
-  ? '<strong>Transferencia bancaria disponible.</strong> Tarjeta próximamente. Sin pago contra entrega.'
+  ? '<strong>Pago por transferencia bancaria.</strong> Sin pago contra entrega.'
   : 'Transferencia y tarjeta previstas, <strong>pendientes de habilitación</strong>. Sin pago contra entrega.';
 
 const views = {};
@@ -815,8 +815,8 @@ async function mountCheckout() {
           ${field('detalle', 'Barrio, apartamento o referencia', { req: false, attrs: 'maxlength="120"' })}
           <div class="field"><label for="f-notas">Notas para tu pedido <span class="opt">(opcional)</span></label><textarea id="f-notas" name="notas" maxlength="300"></textarea></div>
         </fieldset>
-        <fieldset class="fieldset"><legend>Medio de pago previsto</legend>
-          ${CFG.payments.methods.map((m, i) => `<label class="radio"><input type="radio" name="paymentMethod" value="${m.id}" ${i === 0 ? 'checked' : ''} ${TRANSFER && m.status !== 'disponible' ? 'disabled' : ''}><span><strong>${m.label}</strong><span class="muted small">${m.status === 'disponible' ? 'Verás los datos de la cuenta al registrar tu pedido.' : (TRANSFER ? 'Próximamente.' : 'Pendiente de habilitación. Te contactaremos para coordinar el pago.')}</span></span></label>`).join('')}
+        <fieldset class="fieldset"><legend>${TRANSFER ? 'Medio de pago' : 'Medio de pago previsto'}</legend>
+          ${CFG.payments.methods.filter(m => !TRANSFER || m.status === 'disponible').map((m, i) => `<label class="radio"><input type="radio" name="paymentMethod" value="${m.id}" ${i === 0 ? 'checked' : ''} ${TRANSFER && m.status !== 'disponible' ? 'disabled' : ''}><span><strong>${m.label}</strong><span class="muted small">${m.status === 'disponible' ? 'Verás los datos de la cuenta al registrar tu pedido.' : (TRANSFER ? 'Próximamente.' : 'Pendiente de habilitación. Te contactaremos para coordinar el pago.')}</span></span></label>`).join('')}
           <p class="muted small" style="margin:0">No ofrecemos pago contra entrega. Este formulario no solicita datos de tarjeta.</p>
         </fieldset>
         <fieldset class="fieldset"><legend>Tratamiento de datos</legend>
