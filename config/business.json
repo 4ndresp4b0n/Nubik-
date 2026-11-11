@@ -119,9 +119,9 @@
       "packagingPerOrder": null
     },
     "inventory": {
-      "pelota-interactiva": null,
-      "guante-quitapelos": null,
-      "_nota": "null = inventario no informado. La web muestra 'Disponibilidad por confirmar' y no limita por stock."
+      "pelota-interactiva": 99,
+      "guante-quitapelos": 28,
+      "_nota": "Stock informado por el proveedor el 2026-11-11 (no se descuenta solo con cada pedido: actualizar a mano). null = inventario no informado. La web muestra 'Disponibilidad por confirmar' y no limita por stock."
     }
   }
 }

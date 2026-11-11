@@ -169,7 +169,11 @@ class API(unittest.TestCase):
         _, body, _ = self.req("/productos/pelota-interactiva")
         self.assertIn('"price": "59900"', body)
         self.assertIn('og:title', body)
-        self.assertNotIn("InStock", body)  # stock no informado: no se declara
+        stock = CFG["internal"]["inventory"].get("pelota-interactiva")
+        if stock is None:
+            self.assertNotIn("InStock", body)  # stock no informado: no se declara
+        else:
+            self.assertIn("InStock" if stock > 0 else "OutOfStock", body)
         self.assertNotIn("aggregateRating", body)
 
     def test_quote_y_guante(self):

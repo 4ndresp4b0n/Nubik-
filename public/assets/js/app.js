@@ -521,6 +521,14 @@ views['/productos/pelota-interactiva'] = () => productPage({
         <li>${icon('check')} Necesita estar cargada para funcionar.</li>
         <li>${icon('check')} Cargador incluido en la caja.</li>
       </ul>
+      <h2 class="h3" style="margin-top:22px">Especificaciones</h2>
+      <dl class="specs">
+        <div><dt>Tamaño</dt><dd>4 × 4 × 4 cm</dd></div>
+        <div><dt>Peso</dt><dd>50 g</dd></div>
+        <div><dt>Material</dt><dd>Goma</dd></div>
+        <div><dt>Color</dt><dd>Azul</dd></div>
+      </dl>
+      <p class="muted small">Especificaciones informadas por el proveedor.</p>
       <p class="muted small">¿Prefieres llevarla con el guante quitapelos? <a class="link" href="/combo-nubik">Conoce el Combo NUBIK por ${money(combo.price)} COP</a>.</p>
     </div>
     <div class="tabs-block">
@@ -555,6 +563,24 @@ views['/combo-nubik'] = () => productPage({
         <li>${icon('check')} <span><strong>1 pelota interactiva NUBIK</strong>: se mueve sola, tres modos de funcionamiento, recargable, cargador incluido.</span></li>
         <li>${icon('check')} <span><strong>1 guante quitapelos NUBIK</strong>: para perros y gatos, ayuda a retirar el pelo suelto durante el cuidado del pelaje.</span></li>
       </ul>
+      <h2 class="h3" style="margin-top:22px">Especificaciones</h2>
+      <h3 class="specs__title">Pelota interactiva</h3>
+      <dl class="specs">
+        <div><dt>Tamaño</dt><dd>4 × 4 × 4 cm</dd></div>
+        <div><dt>Peso</dt><dd>50 g</dd></div>
+        <div><dt>Material</dt><dd>Goma</dd></div>
+        <div><dt>Color</dt><dd>Azul</dd></div>
+      </dl>
+      <h3 class="specs__title">Guante quitapelos</h3>
+      <dl class="specs">
+        <div><dt>Cerdas</dt><dd>Metálicas con puntas redondeadas</dd></div>
+        <div><dt>Ajuste</dt><dd>Ajustable a la mano</dd></div>
+        <div><dt>Material</dt><dd>Tela</dd></div>
+        <div><dt>Medidas</dt><dd>15 × 3 × 5 cm</dd></div>
+        <div><dt>Peso</dt><dd>100 g</dd></div>
+        <div><dt>Color</dt><dd>Gris</dd></div>
+      </dl>
+      <p class="muted small">Especificaciones informadas por el proveedor.</p>
       <div class="notice">${icon('info')}<span>El guante quitapelos no se vende por separado: está disponible únicamente dentro de este combo. Si solo quieres la pelota, <a class="link" href="/productos/pelota-interactiva">cómprala por ${money(ball.price)} COP</a>.</span></div>
     </div>
     <div class="tabs-block">
