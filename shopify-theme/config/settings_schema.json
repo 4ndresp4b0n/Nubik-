@@ -1,0 +1,65 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "NUBIK",
+    "theme_version": "1.0.0",
+    "theme_author": "NUBIK",
+    "theme_documentation_url": "https://github.com/4ndresp4b0n/Nubik-",
+    "theme_support_url": "https://github.com/4ndresp4b0n/Nubik-"
+  },
+  {
+    "name": "NUBIK",
+    "settings": [
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "Número de WhatsApp (con indicativo, sin +)",
+        "default": "573184526653"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_display",
+        "label": "WhatsApp como se muestra",
+        "default": "+57 318 452 6653"
+      },
+      {
+        "type": "header",
+        "content": "Productos (identificador / handle)"
+      },
+      {
+        "type": "text",
+        "id": "ball_handle",
+        "label": "Pelota interactiva",
+        "default": "pelota-interactiva"
+      },
+      {
+        "type": "text",
+        "id": "combo_handle",
+        "label": "Combo NUBIK",
+        "default": "combo-nubik"
+      },
+      {
+        "type": "text",
+        "id": "duo_handle",
+        "label": "Dúo de pelotas",
+        "default": "duo-pelotas"
+      },
+      {
+        "type": "header",
+        "content": "Envíos"
+      },
+      {
+        "type": "text",
+        "id": "ship_main",
+        "label": "Entrega estimada: ciudades principales",
+        "default": "2–3 días hábiles"
+      },
+      {
+        "type": "text",
+        "id": "ship_rest",
+        "label": "Entrega estimada: resto del país",
+        "default": "5–6 días hábiles"
+      }
+    ]
+  }
+]

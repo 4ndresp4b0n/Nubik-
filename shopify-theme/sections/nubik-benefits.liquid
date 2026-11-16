@@ -1,0 +1,41 @@
+<section class="section">
+  <div class="wrap center">
+    <span class="eyebrow">Beneficios</span>
+    <h2 class="h2 reveal">Pensado para sus pequeños grandes momentos</h2>
+    <div class="cards">
+      <article class="card reveal"><div class="card__ico">{% render 'icon', name: 'move' %}</div><h3>Entretenimiento</h3><p>Una pelota con movimiento automático y tres modos de funcionamiento para variar sus ratos de juego.</p></article>
+      <article class="card reveal"><div class="card__ico">{% render 'icon', name: 'hand' %}</div><h3>Cuidado</h3><p>Un guante para ayudar a retirar el pelo suelto de perros y gatos durante su rutina de cuidado.</p></article>
+      <article class="card reveal"><div class="card__ico">{% render 'icon', name: 'truck' %}</div><h3>Comodidad</h3><p>Compra online desde casa con envío gratis a toda Colombia.</p></article>
+    </div>
+  </div>
+</section>
+<section class="section section--dark">
+  <div class="wrap">
+    <span class="eyebrow">Cómo funciona</span>
+    <h2 class="h2 reveal" style="color:#fff;max-width:16ch">Simple de entender, fácil de disfrutar</h2>
+    <div class="steps">
+      <div class="step reveal"><h3>Qué hace la pelota</h3><p>Se mueve sola y ofrece tres modos de funcionamiento.</p></div>
+      <div class="step reveal"><h3>Cárgala primero</h3><p>Necesita estar cargada para funcionar. Cárgala antes de usarla.</p></div>
+      <div class="step reveal"><h3>Qué trae la caja</h3><p>La pelota interactiva y su cargador.</p></div>
+      <div class="step reveal"><h3>Para qué sirve el guante</h3><p>Ayuda a retirar el pelo suelto de perros y gatos al pasarlo por el pelaje.</p></div>
+      <div class="step reveal"><h3>Qué incluye el combo</h3><p>Una pelota interactiva con su cargador y un guante quitapelos.</p></div>
+    </div>
+  </div>
+</section>
+<section class="section section--nube">
+  <div class="wrap">
+    <span class="eyebrow">Sin filtros</span>
+    <h2 class="h2 reveal" style="max-width:18ch">Fotos reales de los productos</h2>
+    <p class="lead">Así se ven la pelota y el guante fuera del estudio.</p>
+    <div class="real">
+      <figure class="reveal">{% render 'img', name: 'real-pelota-palma', alt: 'Fotografía real de la pelota interactiva en la mano', w: 480 %}</figure>
+      <figure class="reveal">{% render 'img', name: 'real-guante-mano', alt: 'Fotografía real del guante quitapelos puesto', w: 480 %}</figure>
+      <figure class="reveal">{% render 'img', name: 'real-pelota-alfombra', alt: 'Fotografía real de la pelota interactiva sobre una alfombra', w: 480 %}</figure>
+      <figure class="reveal">{% render 'img', name: 'real-guante-lateral', alt: 'Fotografía real del guante quitapelos visto de lado', w: 480 %}</figure>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Beneficios y fotos reales", "settings": [], "presets": [{ "name": "Beneficios y fotos reales" }] }
+{% endschema %}

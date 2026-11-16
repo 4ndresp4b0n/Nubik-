@@ -1,0 +1,53 @@
+{%- assign combo = all_products[settings.combo_handle] -%}
+<div class="wrap">
+  <div class="page-head"><span class="eyebrow">Tu compra</span><h1>Carrito</h1></div>
+  {%- if cart.item_count == 0 -%}
+    <div class="empty" style="margin-bottom:80px">{% render 'icon', name: 'bag' %}<h2 class="h3">Tu carrito está vacío</h2>
+      <p class="muted">Empieza por nuestra oferta destacada.</p>
+      <div class="btn-row" style="justify-content:center"><a class="btn" href="{{ routes.root_url }}products/{{ settings.combo_handle }}">Ver el combo</a><a class="btn btn--ghost" href="{{ routes.root_url }}products/{{ settings.ball_handle }}">Ver la pelota</a></div></div>
+  {%- else -%}
+  <form action="{{ routes.cart_url }}" method="post" id="cartForm" class="cart" novalidate>
+    <div class="cart__list">
+      {%- assign has_combo = false -%}
+      {%- for item in cart.items -%}
+        {%- if item.product.handle == settings.combo_handle -%}{%- assign has_combo = true -%}{%- endif -%}
+        <article class="line">
+          {%- if item.image -%}{{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}
+          <div><h3><a href="{{ item.url }}" style="text-decoration:none">{{ item.product.title }}</a></h3>
+            <div class="line__meta">{{ item.final_price | money_without_trailing_zeros }} COP c/u
+              {%- case item.product.handle -%}
+                {%- when settings.combo_handle -%} · Incluye pelota + cargador y guante quitapelos
+                {%- when settings.duo_handle -%} · Incluye 2 pelotas, cada una con su cargador
+                {%- else -%} · Cargador incluido
+              {%- endcase -%}</div>
+            <div class="line__ctrl">
+              <div class="qty qty--sm" data-qty><button type="button" data-d="-1" aria-label="Restar una unidad de {{ item.product.title | escape }}">{% render 'icon', name: 'minus' %}</button><input type="number" name="updates[]" value="{{ item.quantity }}" min="0" max="10" aria-label="Cantidad de {{ item.product.title | escape }}" data-autosubmit><button type="button" data-d="1" aria-label="Sumar una unidad de {{ item.product.title | escape }}">{% render 'icon', name: 'plus' %}</button></div>
+              <span class="line__total">{{ item.final_line_price | money_without_trailing_zeros }}</span>
+              <a class="rm" href="{{ item.url_to_remove }}">{% render 'icon', name: 'trash' %} Eliminar</a>
+            </div></div>
+        </article>
+      {%- endfor -%}
+      {%- unless has_combo or combo.id == nil -%}
+        <div class="notice notice--info">{% render 'icon', name: 'sparkle' %}<span>¿Quieres sumar el guante quitapelos? Solo está disponible en el <a class="link" href="{{ combo.url }}">Combo NUBIK ({{ combo.price | money_without_trailing_zeros }} COP)</a>.</span></div>
+      {%- endunless -%}
+      <noscript><button class="btn btn--ghost" type="submit" name="update">Actualizar carrito</button></noscript>
+    </div>
+    <aside class="summary" aria-label="Resumen del pedido">
+      <h2>Resumen</h2>
+      <div class="sumrow"><span>Subtotal</span><strong>{{ cart.total_price | money_without_trailing_zeros }} COP</strong></div>
+      <div class="sumrow"><span>Envío</span><span class="free">Gratis</span></div>
+      <div class="sumrow sumrow--total"><span>Total</span><span>{{ cart.total_price | money_without_trailing_zeros }} COP</span></div>
+      <button class="btn btn--block" type="submit" name="checkout" style="margin-top:12px">Finalizar compra {% render 'icon', name: 'arrow' %}</button>
+      {%- capture wa_text -%}Hola NUBIK, quiero consultar por este pedido:{% for item in cart.items %}
+• {{ item.product.title }} x{{ item.quantity }}{% endfor %}
+Total: {{ cart.total_price | money_without_trailing_zeros }} COP (envío gratis){%- endcapture -%}
+      <a class="btn btn--ghost btn--block" style="margin-top:10px" href="{% render 'wa-link', text: wa_text %}" target="_blank" rel="noopener">{% render 'icon', name: 'chat' %} Consultar por WhatsApp</a>
+      <p class="muted small" style="margin-top:14px">Pagas por transferencia bancaria: al finalizar la compra verás los datos de la cuenta. Tu pedido se confirma cuando NUBIK verifica el pago. No ofrecemos pago contra entrega.</p>
+    </aside>
+  </form>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{ "name": "Carrito", "settings": [] }
+{% endschema %}

@@ -1,0 +1,9 @@
+{%- comment -%} Logo NUBIK: gatito animado + palabra. awake: true agrega la versión con ojos abiertos (pie de página). {%- endcomment -%}
+<span class="logo" role="img" aria-label="NUBIK">
+  {%- if awake -%}
+    <span class="logo__face"><img class="logo__cat" src="{{ 'nubik-gato.png' | asset_url }}" alt="" width="73" height="52"><img class="logo__cat logo__cat--awake" src="{{ 'nubik-gato-despierto.png' | asset_url }}" alt="" width="73" height="52"></span>
+  {%- else -%}
+    <img class="logo__cat" src="{{ 'nubik-gato.png' | asset_url }}" alt="" width="73" height="52">
+  {%- endif -%}
+  <img class="logo__word logo--normal" src="{{ 'nubik-texto.png' | asset_url }}" alt="" width="140" height="52"><img class="logo__word logo--claro" src="{{ 'nubik-texto-claro.png' | asset_url }}" alt="" width="140" height="52">
+</span>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code | default: 'es' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1F3A5F">
+  <link rel="canonical" href="{{ canonical_url }}">
+  <title>{{ page_title }}{% if current_page != 1 %} – Página {{ current_page }}{% endif %}{% unless page_title contains shop.name %} | {{ shop.name }}{% endunless %}</title>
+  {%- if page_description %}<meta name="description" content="{{ page_description | escape }}">{% endif %}
+  <meta property="og:site_name" content="{{ shop.name }}">
+  <meta property="og:title" content="{{ page_title | escape }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  {%- if page_description %}<meta property="og:description" content="{{ page_description | escape }}">{% endif %}
+  {%- if template.name == 'product' and product.featured_image -%}
+    <meta property="og:type" content="product">
+    <meta property="og:image" content="https:{{ product.featured_image | image_url: width: 1200 }}">
+  {%- else -%}
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https:{{ 'combo-nubik-960.webp' | asset_url }}">
+  {%- endif %}
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="{{ 'nubik-icon-32.png' | asset_url }}" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="{{ 'nubik-icon-180.png' | asset_url }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+  {{ 'nubik.css' | asset_url | stylesheet_tag }}
+  {{ 'nubik-shopify.css' | asset_url | stylesheet_tag }}
+  {{ content_for_header }}
+</head>
+<body class="{% if template.name == 'index' %}is-home{% endif %} template-{{ template.name }}">
+  <a class="skip" href="#main">Saltar al contenido</a>
+  {% section 'header' %}
+  <main id="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+  {% section 'footer' %}
+  <a class="fab" href="{% render 'wa-link' %}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">{% render 'icon', name: 'chat' %}<span>¿Dudas? Escríbenos</span></a>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    window.NUBIK = {
+      cartUrl: {{ routes.cart_url | json }},
+      cartAddUrl: {{ routes.cart_add_url | json }},
+      mascot: [
+        ['Miau… ¿hoy jugaste conmigo? Te estaba esperando 🐾', {{ routes.root_url | append: 'products/' | append: settings.ball_handle | json }}],
+        ['Cuando me cepillas, siento que me quieres un poquito más 💙', {{ routes.root_url | append: 'products/' | append: settings.combo_handle | json }}],
+        ['Gracias por cuidarme tanto. Yo también te cuido a mi manera', {{ routes.root_url | append: 'products/' | append: settings.combo_handle | json }}],
+        ['¿Tienes dudas? Aquí estamos para ayudarte 💬', {{ 'https://wa.me/' | append: settings.whatsapp_number | json }}]
+      ]
+    };
+  </script>
+  <script src="{{ 'nubik.js' | asset_url }}" defer></script>
+</body>
+</html>

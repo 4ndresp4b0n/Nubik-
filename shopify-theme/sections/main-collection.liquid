@@ -1,0 +1,24 @@
+<section class="section" style="padding-top:48px">
+  <div class="wrap">
+    <span class="eyebrow">Tienda</span>
+    <h1 class="h2">{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}<div class="lead">{{ collection.description }}</div>{%- endif -%}
+    {%- paginate collection.products by 24 -%}
+      <div class="choices">
+        {%- for p in collection.products -%}
+        <article class="choice">
+          <a class="choice__img" href="{{ p.url }}">{%- if p.featured_image -%}{{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: p.title }}{%- endif -%}</a>
+          <h3>{{ p.title }}</h3>
+          <p class="choice__price">{{ p.price | money_without_trailing_zeros }} <small>COP</small></p>
+          <div class="choice__btns">{% render 'add-button', product: p, class: 'btn' %}<a class="link" href="{{ p.url }}">Ver detalles</a></div>
+        </article>
+        {%- else -%}<p class="muted">Todavía no hay productos en esta colección.</p>
+        {%- endfor -%}
+      </div>
+      {%- if paginate.pages > 1 -%}<div class="btn-row" style="margin-top:28px">{{ paginate | default_pagination }}</div>{%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+{% schema %}
+{ "name": "Colección", "settings": [] }
+{% endschema %}

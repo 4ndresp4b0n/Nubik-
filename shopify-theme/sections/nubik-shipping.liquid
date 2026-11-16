@@ -1,0 +1,50 @@
+<section class="section" style="padding-top:48px">
+  <div class="wrap">
+    <span class="eyebrow">Envíos, despacho y garantía</span>
+    <h1 class="h2" style="max-width:18ch">Así llega tu pedido a casa</h1>
+    <p class="lead">Envío gratis a toda Colombia. Te contamos cada etapa con claridad.</p>
+    {% render 'trust-cards' %}
+  </div>
+</section>
+<section class="section section--white">
+  <div class="wrap">
+    <h2 class="h3">Las etapas de tu pedido</h2>
+    <ol class="timeline" style="max-width:720px">
+      <li><b>1</b><strong>Recepción de la orden</strong><span>Haces tu pedido en la tienda o por WhatsApp.</span></li>
+      <li><b>2</b><strong>Confirmación del pedido</strong><span>NUBIK verifica la transferencia y te confirma el pedido.</span></li>
+      <li><b>3</b><strong>Preparación</strong><span>El proveedor alista y empaca los productos.</span></li>
+      <li><b>4</b><strong>Despacho</strong><span>Se genera la guía y el paquete se entrega a la transportadora, según los horarios de abajo.</span></li>
+      <li><b>5</b><strong>Transporte</strong><span>Ciudades principales: {{ settings.ship_main }} · Resto del país: {{ settings.ship_rest }} (estimado).</span></li>
+      <li><b>6</b><strong>Entrega final</strong><span>La fecha exacta depende de la transportadora y no puede garantizarse.</span></li>
+    </ol>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <h2 class="h3">Horarios de despacho</h2>
+    <div class="sched" style="margin-top:20px">
+      <div class="tcard">{% render 'icon', name: 'clock' %}<h3>Lunes a viernes</h3><p>Las órdenes recibidas hasta las 2:00 p. m. pueden procesarse para despacho durante la tarde del mismo día.</p></div>
+      <div class="tcard">{% render 'icon', name: 'clock' %}<h3>Sábados</h3><p>El proveedor genera guías a las 10:30 a. m. Se recomienda gestionar las órdenes antes de esa hora para intentar despacharlas el mismo día.</p></div>
+      <div class="tcard">{% render 'icon', name: 'clock' %}<h3>Domingos y festivos</h3><p>No se realizan despachos. Las órdenes se gestionan el siguiente día operativo.</p></div>
+    </div>
+    <div class="notice notice--info" style="margin-top:18px">{% render 'icon', name: 'info' %}<span>Horarios operativos informados por el proveedor, sujetos a confirmación con el proveedor y la transportadora. No constituyen una promesa de despacho el mismo día.</span></div>
+    <h2 class="h3" style="margin-top:56px">Empaque</h2>
+    <div class="tcard" style="max-width:780px;margin-top:16px">{% render 'icon', name: 'box' %}<p>Según información del proveedor, los productos delicados pueden enviarse protegidos con cartón y vinipel negro para ayudar a protegerlos de golpes o humedad durante el transporte. El proveedor indica que conserva registros fotográficos y de video del proceso de empaque para respaldar posibles incidencias.</p><p class="small" style="margin-top:10px">Estas prácticas las realiza el proveedor y ayudan a proteger el envío, pero no eliminan por completo el riesgo de daños durante el transporte.</p></div>
+  </div>
+</section>
+<section class="section section--white" id="garantia">
+  <div class="wrap prose">
+    <span class="eyebrow">Garantía</span>
+    <h2 class="h2">Cobertura de garantía</h2>
+    <div class="review-banner">{% render 'icon', name: 'alert' %}<div><strong>Política en confirmación.</strong> El proveedor informa una cobertura comercial de 15 días desde la fecha de entrega, sujeta a condiciones que NUBIK está confirmando por escrito.</div></div>
+    <h3>Tus derechos como consumidor</h3>
+    <p>La cobertura comercial informada por el proveedor no limita los derechos de garantía legal y protección al consumidor que te correspondan en Colombia.</p>
+    <h3>Cómo contactarnos</h3>
+    <p>Si tu producto presenta un problema, escríbenos por WhatsApp al <a class="link" href="{% render 'wa-link' %}" target="_blank" rel="noopener">{{ settings.whatsapp_display }}</a> con tu número de pedido, una descripción y fotos o video del producto. Te indicaremos el procedimiento.</p>
+    {%- if page.content != blank -%}<div class="rte">{{ page.content }}</div>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Envíos y garantía", "settings": [] }
+{% endschema %}

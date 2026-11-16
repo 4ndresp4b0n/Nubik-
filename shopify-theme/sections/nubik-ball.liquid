@@ -1,0 +1,32 @@
+{%- assign ball = all_products[settings.ball_handle] -%}
+<section class="section section--white" id="productos">
+  <div class="wrap feature">
+    <div class="mosaic reveal">
+      <figure class="m1">{% render 'img', name: 'pelota-frontal', alt: 'Pelota interactiva NUBIK azul con botón de encendido', sizes: '(min-width: 900px) 360px, 55vw' %}</figure>
+      <figure>{% render 'img', name: 'real-pelota-palma', alt: 'Fotografía real de la pelota interactiva NUBIK en la palma de la mano', w: 480 %}</figure>
+      <figure>{% render 'img', name: 'pelota-gato', alt: 'Gato abrazando la pelota interactiva NUBIK', w: 480 %}</figure>
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">Pelota interactiva</span>
+      <h2 class="h2">El juego se mueve con NUBIK</h2>
+      <p class="lead">Haz que los momentos de juego de tu gato sean más dinámicos con su movimiento automático y sus tres modos.</p>
+      <ul class="points">
+        <li><span class="pi">{% render 'icon', name: 'move' %}</span><div><strong>Movimiento automático</strong><span>Se mueve sola para hacer el juego más dinámico.</span></div></li>
+        <li><span class="pi">{% render 'icon', name: 'layers' %}</span><div><strong>Tres modos de funcionamiento</strong><span>Distintas opciones de entretenimiento.</span></div></li>
+        <li><span class="pi">{% render 'icon', name: 'battery' %}</span><div><strong>Recargable</strong><span>Necesita estar cargada para funcionar.</span></div></li>
+        <li><span class="pi">{% render 'icon', name: 'plug' %}</span><div><strong>Cargador incluido</strong><span>Viene en la caja junto con la pelota.</span></div></li>
+      </ul>
+      {%- if ball.id -%}
+        <div class="price-row"><span class="price">{{ ball.price | money_without_trailing_zeros }}<small>COP</small></span><span class="ship-note">{% render 'icon', name: 'truck' %} Envío gratis</span></div>
+        <div class="btn-row">
+          {% render 'add-button', product: ball, class: 'btn' %}
+          <a class="btn btn--ghost" href="{{ ball.url }}">Ver detalles</a>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Pelota destacada", "settings": [], "presets": [{ "name": "Pelota destacada" }] }
+{% endschema %}

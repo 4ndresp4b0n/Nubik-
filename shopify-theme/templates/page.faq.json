@@ -1,0 +1,118 @@
+{
+  "sections": {
+    "faq": {
+      "type": "nubik-faq",
+      "settings": {
+        "eyebrow": "Ayuda",
+        "title": "Preguntas frecuentes",
+        "is_page_title": true,
+        "show_all_link": false,
+        "white": false,
+        "page_top": true
+      },
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "¿Cómo funciona la pelota interactiva?",
+            "answer": "<p>La pelota interactiva NUBIK se mueve sola y tiene tres modos de funcionamiento, para que tu gato tenga distintas opciones de juego. Necesita estar cargada para funcionar.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "¿Cuántos modos tiene?",
+            "answer": "<p>Tiene tres modos de funcionamiento. Si quieres saber más sobre cada uno antes de comprar, escríbenos por WhatsApp.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "¿Qué incluye la caja de la pelota?",
+            "answer": "<p>La pelota interactiva y su cargador. Recuerda cargarla antes de usarla por primera vez.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "¿Cómo se utiliza el guante quitapelos?",
+            "answer": "<p>Te pones el guante en la mano y lo pasas sobre el pelaje de tu perro o gato durante su rutina de cuidado, para ayudar a retirar el pelo suelto.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "¿Puedo comprar el guante quitapelos por separado?",
+            "answer": "<p>No. El guante quitapelos se ofrece únicamente dentro del Combo NUBIK, junto con la pelota interactiva.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "¿Qué incluye el combo?",
+            "answer": "<p>El Combo NUBIK incluye una pelota interactiva (con su cargador) y un guante quitapelos, por $89.900 COP con envío gratis. La pelota también está disponible sola por $59.900 COP.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "question": "¿Qué incluye el Dúo de pelotas?",
+            "answer": "<p>Dos pelotas interactivas NUBIK, cada una con su cargador, por $80.000 COP con envío gratis. Es ideal si tienes dos gatos o si quieres tener una pelota lista mientras la otra se carga.</p>"
+          }
+        },
+        "q8": {
+          "type": "question",
+          "settings": {
+            "question": "¿Cuánto tarda el envío?",
+            "answer": "<p>Los tiempos son estimados y se cuentan en días hábiles desde el despacho: ciudades principales, 2–3 días hábiles; resto del país, 5–6 días hábiles. La fecha exacta depende de la transportadora, por eso no podemos garantizarla.</p>"
+          }
+        },
+        "q9": {
+          "type": "question",
+          "settings": {
+            "question": "¿El envío tiene algún costo?",
+            "answer": "<p>No. El envío es gratis para ti: NUBIK asume su costo.</p>"
+          }
+        },
+        "q10": {
+          "type": "question",
+          "settings": {
+            "question": "¿Qué medios de pago aceptan?",
+            "answer": "<p>Por ahora recibimos pagos por <strong>transferencia bancaria</strong>: al finalizar la compra verás los datos de la cuenta y el valor exacto. Tu pedido se confirma cuando verificamos el pago. No ofrecemos pago contra entrega.</p>"
+          }
+        },
+        "q11": {
+          "type": "question",
+          "settings": {
+            "question": "¿Cómo puedo consultar sobre mi pedido?",
+            "answer": "<p>Escríbenos por WhatsApp al +57 318 452 6653 e indícanos tu número de pedido. Lo encuentras en el correo de confirmación de tu compra.</p>"
+          }
+        },
+        "q12": {
+          "type": "question",
+          "settings": {
+            "question": "¿Cómo funciona la garantía?",
+            "answer": "<p>El proveedor informa una cobertura comercial de 15 días desde la fecha de entrega, sujeta a condiciones que NUBIK está confirmando por escrito. Si tu producto presenta un problema, escríbenos por WhatsApp y te indicaremos el procedimiento.</p><p>Esta cobertura comercial no limita los derechos de garantía que te reconoce la ley colombiana como consumidor.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7",
+        "q8",
+        "q9",
+        "q10",
+        "q11",
+        "q12"
+      ]
+    }
+  },
+  "order": [
+    "faq"
+  ]
+}

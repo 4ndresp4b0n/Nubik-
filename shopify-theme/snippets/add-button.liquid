@@ -1,0 +1,15 @@
+{%- comment -%}
+  Botón "añadir al carrito" para un producto. Funciona sin JavaScript (formulario normal)
+  y con JavaScript se agrega sin salir de la página.
+  Uso: {% render 'add-button', product: p, label: 'Quiero el combo', class: 'btn btn--nube' %}
+{%- endcomment -%}
+{%- if product.id -%}
+  {%- assign variant = product.selected_or_first_available_variant -%}
+  <form method="post" action="{{ routes.cart_add_url }}" class="add-form" data-add-form>
+    <input type="hidden" name="id" value="{{ variant.id }}">
+    <input type="hidden" name="quantity" value="1">
+    <button type="submit" class="{{ class | default: 'btn' }}"{% unless variant.available %} disabled{% endunless %}>
+      {% render 'icon', name: 'bag' %} {% if variant.available %}{{ label | default: 'Añadir al carrito' }}{% else %}Agotado{% endif %}
+    </button>
+  </form>
+{%- endif -%}

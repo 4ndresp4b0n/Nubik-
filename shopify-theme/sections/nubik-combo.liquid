@@ -1,0 +1,33 @@
+{%- assign combo = all_products[settings.combo_handle] -%}
+<section class="section" id="combo">
+  <div class="wrap">
+    <div class="combo reveal">
+      <div class="combo__art">
+        <figure>{% render 'img', name: 'gatito-pelota', alt: 'Gatito naranja persiguiendo la pelota interactiva NUBIK sobre una alfombra', sizes: '(min-width: 900px) 280px, 45vw' %}</figure>
+        <figure>{% render 'img', name: 'vida-gato-guante', alt: 'Gato relajado mientras lo cepillan con el guante quitapelos NUBIK', sizes: '(min-width: 900px) 280px, 45vw' %}</figure>
+        <span class="combo__plus" aria-hidden="true">{% render 'icon', name: 'plus' %}</span>
+      </div>
+      <div>
+        <span class="tag">Oferta destacada</span>
+        <h2 class="h2" style="margin-top:18px">Dos formas de cuidar sus momentos</h2>
+        <p class="lead">Juego y cuidado del pelaje en un solo paquete: la pelota interactiva y el guante quitapelos, juntos.</p>
+        <ul class="incl">
+          <li>{% render 'icon', name: 'check' %} 1 pelota interactiva NUBIK + cargador</li>
+          <li>{% render 'icon', name: 'check' %} 1 guante quitapelos NUBIK <em>Solo en combo</em></li>
+          <li>{% render 'icon', name: 'truck' %} Envío gratis a toda Colombia</li>
+        </ul>
+        {%- if combo.id -%}
+          <div class="price-row"><span class="price">{{ combo.price | money_without_trailing_zeros }}<small>COP</small></span></div>
+          <div class="btn-row">
+            {% render 'add-button', product: combo, label: 'Quiero el combo', class: 'btn btn--nube' %}
+            <a class="btn btn--ghost-light" href="{{ combo.url }}">Ver el combo</a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Combo destacado", "settings": [], "presets": [{ "name": "Combo destacado" }] }
+{% endschema %}

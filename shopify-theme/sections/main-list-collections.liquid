@@ -1,0 +1,9 @@
+<section class="section" style="padding-top:48px">
+  <div class="wrap">
+    <h1 class="h2">Colecciones</h1>
+    <ul>{%- for c in collections -%}<li><a class="link" href="{{ c.url }}">{{ c.title }}</a></li>{%- endfor -%}</ul>
+  </div>
+</section>
+{% schema %}
+{ "name": "Lista de colecciones", "settings": [] }
+{% endschema %}

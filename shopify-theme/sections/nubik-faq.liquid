@@ -1,0 +1,44 @@
+<section class="section{% if section.settings.white %} section--white{% endif %}"{% if section.settings.page_top %} style="padding-top:48px"{% endif %}>
+  <div class="wrap center">
+    <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+    {%- if section.settings.is_page_title -%}
+      <h1 class="h2">{{ section.settings.title }}</h1>
+    {%- else -%}
+      <h2 class="h2">{{ section.settings.title }}</h2>
+    {%- endif -%}
+    <div class="faq">
+      {%- for block in section.blocks -%}
+        <details {{ block.shopify_attributes }}><summary>{{ block.settings.question }}{% render 'icon', name: 'chevron' %}</summary><div class="ans">{{ block.settings.answer }}</div></details>
+      {%- endfor -%}
+    </div>
+    <div class="btn-row" style="justify-content:center;margin-top:28px">
+      {%- if section.settings.show_all_link -%}<a class="btn btn--ghost" href="{{ routes.root_url }}pages/preguntas-frecuentes">Ver todas las preguntas</a>{%- endif -%}
+      <a class="btn btn--nube" href="{% render 'wa-link' %}" target="_blank" rel="noopener">{% render 'icon', name: 'chat' %} Pregúntanos</a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Preguntas frecuentes",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Etiqueta", "default": "Preguntas frecuentes" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Lo que más nos preguntan" },
+    { "type": "checkbox", "id": "is_page_title", "label": "Usar como título principal de la página", "default": false },
+    { "type": "checkbox", "id": "show_all_link", "label": "Mostrar «Ver todas las preguntas»", "default": true },
+    { "type": "checkbox", "id": "white", "label": "Fondo blanco", "default": true },
+    { "type": "checkbox", "id": "page_top", "label": "Menos espacio arriba (página propia)", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Pregunta",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Pregunta", "default": "Pregunta" },
+        { "type": "richtext", "id": "answer", "label": "Respuesta", "default": "<p>Respuesta</p>" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Preguntas frecuentes" }]
+}
+{% endschema %}

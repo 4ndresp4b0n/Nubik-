@@ -1,0 +1,4 @@
+{% layout none %}
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Tarjeta de regalo | {{ shop.name }}</title>{{ 'nubik.css' | asset_url | stylesheet_tag }}</head>
+<body><main class="wrap section center"><h1 class="h2">Tarjeta de regalo</h1><p class="lead">Saldo: {{ gift_card.balance | money }}</p><p><strong>{{ gift_card.code | format_code }}</strong></p><a class="btn" href="{{ shop.url }}">Ir a la tienda</a></main></body></html>

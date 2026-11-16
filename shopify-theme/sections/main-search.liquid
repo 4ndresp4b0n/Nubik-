@@ -1,0 +1,27 @@
+<section class="section" style="padding-top:48px">
+  <div class="wrap">
+    <h1 class="h2">Buscar</h1>
+    <form action="{{ routes.search_url }}" method="get" role="search" class="field" style="max-width:520px">
+      <label for="q">¿Qué buscas?</label>
+      <input id="q" type="search" name="q" value="{{ search.terms | escape }}">
+    </form>
+    {%- if search.performed -%}
+      <div class="choices">
+        {%- for p in search.results -%}
+          {%- if p.object_type == 'product' -%}
+        <article class="choice">
+          <a class="choice__img" href="{{ p.url }}">{%- if p.featured_image -%}{{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: p.title }}{%- endif -%}</a>
+          <h3>{{ p.title }}</h3>
+          <p class="choice__price">{{ p.price | money_without_trailing_zeros }} <small>COP</small></p>
+          <div class="choice__btns">{% render 'add-button', product: p, class: 'btn' %}<a class="link" href="{{ p.url }}">Ver detalles</a></div>
+        </article>
+          {%- endif -%}
+        {%- else -%}<p class="muted">No encontramos resultados para «{{ search.terms | escape }}».</p>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+{% schema %}
+{ "name": "Búsqueda", "settings": [] }
+{% endschema %}

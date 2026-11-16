@@ -1,0 +1,8 @@
+{%- comment -%}
+  Imagen del tema en dos tamaños (480 y 960 px).
+  Uso: {% render 'img', name: 'pelota-frontal', alt: 'Texto', sizes: '50vw', eager: false, w: 960 %}
+{%- endcomment -%}
+{%- assign w = w | default: 960 -%}
+{%- assign small = name | append: '-480.webp' | asset_url -%}
+{%- assign big = name | append: '-960.webp' | asset_url -%}
+<img src="{% if w == 480 %}{{ small }}{% else %}{{ big }}{% endif %}" srcset="{{ small }} 480w, {{ big }} 960w"{% if sizes != blank %} sizes="{{ sizes }}"{% endif %} alt="{{ alt | escape }}" {% if eager %}fetchpriority="high"{% else %}loading="lazy"{% endif %} decoding="async" width="960" height="960"{% if class != blank %} class="{{ class }}"{% endif %}>

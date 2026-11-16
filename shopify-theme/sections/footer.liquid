@@ -1,0 +1,40 @@
+{%- assign home = routes.root_url -%}
+<footer class="footer" id="footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div>
+        <div class="mascot">
+          <a class="mascot__bubble" href="{{ home }}products/{{ settings.combo_handle }}" tabindex="-1" aria-hidden="true"></a>
+          <a class="brand" href="{{ home }}" aria-label="NUBIK, ir al inicio">{% render 'logo', awake: true %}</a>
+        </div>
+        <p class="footer__slogan">Suave como una nube, feliz como un gato.</p>
+        <p class="small">Productos para gatos y perros con envío gratis en Colombia.</p>
+      </div>
+      <div><h4>Tienda</h4><ul>
+        <li><a href="{{ home }}products/{{ settings.ball_handle }}">Pelota interactiva</a></li>
+        <li><a href="{{ home }}products/{{ settings.combo_handle }}">Combo NUBIK</a></li>
+        <li><a href="{{ home }}products/{{ settings.duo_handle }}">Dúo de pelotas</a></li>
+        <li><a href="{{ routes.cart_url }}">Carrito</a></li></ul></div>
+      <div><h4>Ayuda</h4><ul>
+        <li><a href="{{ home }}pages/envios-y-garantias">Envíos</a></li>
+        <li><a href="{{ home }}pages/envios-y-garantias#garantia">Garantías</a></li>
+        <li><a href="{{ home }}pages/preguntas-frecuentes">Preguntas frecuentes</a></li>
+        <li><a href="{% render 'wa-link' %}" target="_blank" rel="noopener">WhatsApp {{ settings.whatsapp_display }}</a></li></ul></div>
+      <div><h4>Legal</h4><ul>
+        {%- for policy in shop.policies -%}
+          <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
+        {%- else -%}
+          <li><span class="small">Publica tus políticas en Configuración → Políticas.</span></li>
+        {%- endfor -%}
+      </ul></div>
+    </div>
+    <div class="footer__bottom"><span>© {{ 'now' | date: '%Y' }} NUBIK · Colombia</span><span>Envío gratis · Sin pago contra entrega</span></div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Pie de página",
+  "settings": []
+}
+{% endschema %}

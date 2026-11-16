@@ -1,0 +1,107 @@
+{%- assign ball = all_products[settings.ball_handle] -%}
+{%- assign combo = all_products[settings.combo_handle] -%}
+{%- assign duo = all_products[settings.duo_handle] -%}
+{%- assign variant = product.selected_or_first_available_variant -%}
+{%- case product.handle -%}
+  {%- when settings.combo_handle -%}{%- assign eyebrow = 'Oferta destacada · Juego + cuidado' -%}{%- assign add_label = 'Quiero el combo' -%}
+  {%- when settings.duo_handle -%}{%- assign eyebrow = 'Para hogares con 2 gatos' -%}{%- assign add_label = 'Quiero el dúo' -%}
+  {%- when settings.ball_handle -%}{%- assign eyebrow = 'Juguete interactivo para gatos' -%}{%- assign add_label = 'Añadir al carrito' -%}
+  {%- else -%}{%- assign eyebrow = product.type -%}{%- assign add_label = 'Añadir al carrito' -%}
+{%- endcase -%}
+
+<div class="wrap">
+  <nav class="crumbs" aria-label="Ruta de navegación"><a href="{{ routes.root_url }}">Inicio</a> / <span>{{ product.title }}</span></nav>
+  <div class="pdp">
+    <div class="pdp__head">
+      {%- if eyebrow != blank -%}<span class="eyebrow">{{ eyebrow }}</span>{%- endif -%}
+      <h1>{{ product.title }}</h1>
+      <div class="price-row">
+        <span class="price">{{ variant.price | money_without_trailing_zeros }}<small>COP</small></span>
+        <span class="ship-note">{% render 'icon', name: 'truck' %} Envío gratis</span>
+      </div>
+      {%- if variant.available -%}<span class="stock stock--ok">Disponible</span>{%- else -%}<span class="stock">Agotado temporalmente</span>{%- endif -%}
+    </div>
+
+    <div class="gallery" data-gallery>
+      {%- assign first = product.featured_media -%}
+      <div class="gallery__main" id="gmain">
+        {%- if first -%}{%- assign first_alt = first.alt | default: product.title -%}{{ first.preview_image | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 960px) 620px, 92vw', widths: '480,720,960,1200', alt: first_alt }}{%- endif -%}
+      </div>
+      {%- if product.media.size > 1 -%}
+      <div class="gallery__thumbs" role="group" aria-label="Imágenes del producto">
+        {%- for m in product.media -%}
+          {%- if m.media_type == 'image' -%}
+          <button type="button" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="Ver imagen {{ forloop.index }}" data-full="{{ m.preview_image | image_url: width: 1200 }}" data-alt="{{ m.alt | default: product.title | escape }}">{{ m.preview_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}</button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
+    </div>
+
+    <div class="pdp__info">
+      {%- form 'product', product, class: 'buy', data-add-form: '', data-main-buy: '' -%}
+        <input type="hidden" name="id" value="{{ variant.id }}">
+        <div class="buy__row">
+          <div class="qty" data-qty><button type="button" data-d="-1" aria-label="Restar una unidad">{% render 'icon', name: 'minus' %}</button><input type="number" name="quantity" value="1" min="1" max="10" aria-label="Cantidad" inputmode="numeric"><button type="button" data-d="1" aria-label="Sumar una unidad">{% render 'icon', name: 'plus' %}</button></div>
+          <button class="btn" type="submit"{% unless variant.available %} disabled{% endunless %}>{% render 'icon', name: 'bag' %} {% if variant.available %}{{ add_label }}{% else %}Agotado{% endif %}</button>
+        </div>
+        {%- capture wa_text -%}Hola NUBIK, quiero consultar por: {{ product.title }} ({{ variant.price | money_without_trailing_zeros }} COP). Mi consulta: {%- endcapture -%}
+        <a class="btn btn--ghost btn--block" href="{% render 'wa-link', text: wa_text %}" target="_blank" rel="noopener">{% render 'icon', name: 'chat' %} Consultar por WhatsApp</a>
+      {%- endform -%}
+
+      <div class="perks">
+        <div>{% render 'icon', name: 'truck' %}<span><strong>Envío gratis.</strong> Ciudades principales: {{ settings.ship_main }} · Resto del país: {{ settings.ship_rest }} (estimado).</span></div>
+        <div>{% render 'icon', name: 'card' %}<span><strong>Pago por transferencia bancaria.</strong> Sin pago contra entrega.</span></div>
+      </div>
+
+      {%- if product.handle == settings.ball_handle and combo.id and duo.id -%}
+        {%- assign combo_extra = combo.price | minus: product.price -%}
+        {%- assign duo_saving = product.price | times: 2 | minus: duo.price -%}
+        <div class="upsell">
+          <a class="upsell__card" href="{{ combo.url }}">{% render 'img', name: 'combo-nubik', alt: '', w: 480, sizes: '72px' %}<span><strong>Combo NUBIK · {{ combo.price | money_without_trailing_zeros }}</strong><span>Por {{ combo_extra | money_without_trailing_zeros }} más llevas también el guante quitapelos.</span></span>{% render 'icon', name: 'arrow' %}</a>
+          <a class="upsell__card" href="{{ duo.url }}">{% render 'img', name: 'duo-pelotas', alt: '', w: 480, sizes: '72px' %}<span><strong>Dúo de pelotas · {{ duo.price | money_without_trailing_zeros }}</strong><span>¿Tienes dos gatos? Ahorras {{ duo_saving | money_without_trailing_zeros }} frente a comprar 2 por separado.</span></span>{% render 'icon', name: 'arrow' %}</a>
+        </div>
+      {%- endif -%}
+      {%- if product.handle == settings.duo_handle and ball.id -%}
+        {%- assign two = ball.price | times: 2 -%}
+        {%- assign duo_saving = two | minus: product.price -%}
+        <div class="notice notice--info">{% render 'icon', name: 'sparkle' %}<span><strong>Ahorras {{ duo_saving | money_without_trailing_zeros }}</strong> frente a comprar 2 pelotas por separado ({{ two | money_without_trailing_zeros }} COP).</span></div>
+      {%- endif -%}
+
+      <div class="tabs-block product-desc">{{ product.description }}</div>
+
+      <p class="muted small" style="margin-top:18px"><a class="link" href="{{ routes.root_url }}pages/preguntas-frecuentes">Ver preguntas frecuentes</a> · <a class="link" href="{{ routes.root_url }}pages/envios-y-garantias">Envíos y garantía</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="stickybuy" aria-hidden="true">
+  <div class="stickybuy__txt"><strong>{{ product.title }}</strong><span>{{ variant.price | money_without_trailing_zeros }} COP · Envío gratis</span></div>
+  <form method="post" action="{{ routes.cart_add_url }}" data-add-form>
+    <input type="hidden" name="id" value="{{ variant.id }}"><input type="hidden" name="quantity" value="1">
+    <button class="btn btn--sm" type="submit" tabindex="-1"{% unless variant.available %} disabled{% endunless %}>{% render 'icon', name: 'bag' %} {% if product.handle == settings.ball_handle %}Añadir{% else %}{{ add_label }}{% endif %}</button>
+  </form>
+</div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "sku": {{ variant.sku | json }},
+  "brand": { "@type": "Brand", "name": "NUBIK" },
+  "image": [{{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | json }}],
+  "description": {{ product.description | strip_html | truncate: 300 | json }},
+  "offers": {
+    "@type": "Offer",
+    "price": {{ variant.price | divided_by: 100.0 | json }},
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "availability": "https://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+    "url": {{ request.origin | append: product.url | json }}
+  }
+}
+</script>
+
+{% schema %}
+{ "name": "Ficha de producto", "settings": [] }
+{% endschema %}

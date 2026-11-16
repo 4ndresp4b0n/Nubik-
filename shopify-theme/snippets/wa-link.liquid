@@ -1,0 +1,5 @@
+{%- comment -%} Enlace de WhatsApp con mensaje. Uso: {% render 'wa-link', text: 'Hola NUBIK' %} {%- endcomment -%}
+{%- assign wa_num = settings.whatsapp_number | remove: ' ' | remove: '+' -%}
+{%- assign wa_msg = text | default: 'Hola NUBIK, tengo una consulta: ' -%}
+https://wa.me/{{ wa_num }}?text={{ wa_msg | url_encode }}
+{%- comment -%}fin{%- endcomment -%}

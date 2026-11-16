@@ -1,0 +1,19 @@
+<section class="section" id="momentos">
+  <div class="wrap">
+    <span class="eyebrow">Momentos NUBIK</span>
+    <h2 class="h2 reveal" style="max-width:16ch">Juego y cuidado, todos los días</h2>
+    <div class="life">
+      <figure class="life__big reveal">{% render 'img', name: 'vida-gato-pelota', alt: 'Gato atrapando la pelota interactiva NUBIK sobre el piso de la sala', sizes: '(min-width: 900px) 700px, 92vw' %}
+        <figcaption><span class="tag">Juego</span> Pelota interactiva para gatos</figcaption></figure>
+      <figure class="reveal">{% render 'img', name: 'vida-gato-guante', alt: 'Gato con los ojos cerrados mientras lo cepillan con el guante quitapelos NUBIK', sizes: '(min-width: 900px) 480px, 92vw' %}
+        <figcaption><span class="tag tag--nube">Cuidado</span> Guante quitapelos en gatos</figcaption></figure>
+      <figure class="reveal">{% render 'img', name: 'vida-perro-guante', alt: 'Perro golden retriever cepillado con el guante quitapelos NUBIK', sizes: '(min-width: 900px) 480px, 92vw' %}
+        <figcaption><span class="tag tag--nube">Cuidado</span> Guante quitapelos en perros</figcaption></figure>
+    </div>
+    <div class="btn-row" style="margin-top:28px"><a class="btn" href="{{ routes.root_url }}products/{{ settings.combo_handle }}">Quiero el combo</a><a class="btn btn--ghost" href="{{ routes.root_url }}products/{{ settings.ball_handle }}">Ver la pelota</a></div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Momentos NUBIK", "settings": [], "presets": [{ "name": "Momentos NUBIK" }] }
+{% endschema %}

@@ -1,0 +1,34 @@
+<section class="vhero" aria-label="Portada">
+  <div class="vhero__media" aria-hidden="true">
+    <video class="vhero__video is-on" data-src="{{ 'portada-pelota.mp4' | asset_url }}" data-src-sm="{{ 'portada-pelota-sm.mp4' | asset_url }}" poster="{{ 'portada-pelota.jpg' | asset_url }}" muted playsinline preload="auto"></video>
+    <video class="vhero__video" data-src="{{ 'portada-guante.mp4' | asset_url }}" data-src-sm="{{ 'portada-guante-sm.mp4' | asset_url }}" poster="{{ 'portada-guante.jpg' | asset_url }}" muted playsinline preload="none"></video>
+  </div>
+  <div class="vhero__shade" aria-hidden="true"></div>
+  <div class="wrap vhero__copy">
+    <span class="vhero__eyebrow">{{ section.settings.eyebrow }}</span>
+    <h1 class="vhero__title">{{ section.settings.title_1 }}<br><span>{{ section.settings.title_2 }}</span></h1>
+    <p class="vhero__lead">{{ section.settings.lead }}</p>
+    <div class="btn-row vhero__btns">
+      <a class="btn btn--nube" href="{{ routes.root_url }}products/{{ settings.combo_handle }}">Ver el combo</a>
+      <a class="btn btn--ghost-light" href="{{ routes.root_url }}products/{{ settings.ball_handle }}">Descubrir la pelota</a>
+    </div>
+    <div class="vhero__feats"><span>Se mueve sola</span><span>3 modos</span><span>Cargador incluido</span><span>Envío gratis</span></div>
+  </div>
+  <div class="vhero__dots" role="group" aria-label="Videos de portada">
+    <button type="button" data-vid="0" aria-label="Ver video: pelota interactiva rodando con un gato" aria-pressed="true"></button>
+    <button type="button" data-vid="1" aria-label="Ver video: gato cepillado con el guante quitapelos" aria-pressed="false"></button>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Portada con video",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Lema", "default": "Suave como una nube, feliz como un gato" },
+    { "type": "text", "id": "title_1", "label": "Título (línea blanca)", "default": "Pequeños momentos." },
+    { "type": "text", "id": "title_2", "label": "Título (línea azul)", "default": "Grandes ronroneos." },
+    { "type": "textarea", "id": "lead", "label": "Texto", "default": "Descubre nuevas formas de acompañar el juego y el cuidado de tu mascota con NUBIK." }
+  ],
+  "presets": [{ "name": "Portada con video" }]
+}
+{% endschema %}

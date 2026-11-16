@@ -1,0 +1,41 @@
+{%- assign home = routes.root_url -%}
+{%- assign combo_url = home | append: 'products/' | append: settings.combo_handle -%}
+<header class="nav" id="nav">
+  <div class="wrap nav__in">
+    <a class="brand" href="{{ home }}" aria-label="NUBIK, ir al inicio">{% render 'logo' %}</a>
+    <nav aria-label="Principal">
+      <ul class="nav__links">
+        <li><a href="{{ home }}"{% if template.name == 'index' %} aria-current="page"{% endif %}>Inicio</a></li>
+        <li><a href="{{ home }}#opciones">Productos</a></li>
+        <li><a href="{{ combo_url }}"{% if product.handle == settings.combo_handle %} aria-current="page"{% endif %}>Combo</a></li>
+        <li><a href="{{ home }}pages/envios-y-garantias"{% if page.handle == 'envios-y-garantias' %} aria-current="page"{% endif %}>Envíos y garantías</a></li>
+        <li><a href="{{ home }}pages/preguntas-frecuentes"{% if page.handle == 'preguntas-frecuentes' %} aria-current="page"{% endif %}>Preguntas frecuentes</a></li>
+      </ul>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--ghost btn--sm nav__wa" href="{% render 'wa-link' %}" target="_blank" rel="noopener">{% render 'icon', name: 'chat' %} WhatsApp</a>
+      <a class="icon-btn" href="{{ routes.cart_url }}" aria-label="Ver carrito">{% render 'icon', name: 'bag' %}<span class="badge{% if cart.item_count > 0 %} is-on{% endif %}" id="badge" aria-hidden="true">{{ cart.item_count }}</span></a>
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="drawer">{% render 'icon', name: 'menu' %}</button>
+    </div>
+  </div>
+</header>
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer__bg" data-close></div>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Menú">
+    <div class="drawer__head"><a class="brand" href="{{ home }}">{% render 'logo' %}</a><button class="icon-btn" type="button" data-close aria-label="Cerrar menú">{% render 'icon', name: 'x' %}</button></div>
+    <a class="dl" href="{{ home }}">Inicio</a>
+    <a class="dl" href="{{ home }}#opciones">Productos</a>
+    <a class="dl" href="{{ combo_url }}">Combo</a>
+    <a class="dl" href="{{ home }}pages/envios-y-garantias">Envíos y garantías</a>
+    <a class="dl" href="{{ home }}pages/preguntas-frecuentes">Preguntas frecuentes</a>
+    <a class="dl" href="{{ routes.cart_url }}">Carrito</a>
+    <a class="btn btn--nube btn--block" style="margin-top:auto" href="{% render 'wa-link' %}" target="_blank" rel="noopener">{% render 'icon', name: 'chat' %} Escríbenos por WhatsApp</a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Encabezado",
+  "settings": []
+}
+{% endschema %}

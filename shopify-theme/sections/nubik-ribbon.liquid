@@ -1,0 +1,8 @@
+{%- assign items = 'Envío gratis en Colombia|Se mueve sola|Tres modos|Cargador incluido|Combo con guante quitapelos|Suave como una nube, feliz como un gato' | split: '|' -%}
+<div class="ribbon" aria-hidden="true"><div class="ribbon__track">
+  {%- for n in (1..2) -%}{%- for t in items -%}<span>{{ t }}</span>{%- endfor -%}{%- endfor -%}
+</div></div>
+
+{% schema %}
+{ "name": "Cinta en movimiento", "settings": [], "presets": [{ "name": "Cinta en movimiento" }] }
+{% endschema %}
