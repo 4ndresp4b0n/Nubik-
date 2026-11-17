@@ -1,0 +1,217 @@
+{%- comment -%}
+  Página /pages/tarjeta: invitación + formulario para la tarjeta digital del gato.
+  Los datos llegan al correo de la tienda (formulario de contacto de Shopify).
+  La foto se previsualiza en la tarjeta y se envía por WhatsApp (Shopify no recibe archivos en formularios).
+{%- endcomment -%}
+{%- assign wa_num = settings.whatsapp_number | remove: ' ' | remove: '+' -%}
+<section class="tj" id="tarjeta">
+  <div class="tj__wrap">
+    {%- form 'contact', id: 'tj-form', class: 'tj__form-el', data-tj-form: '' -%}
+    {%- if form.posted_successfully? -%}
+      <div class="tj__done" data-tj-done>
+        <span class="tj__badge tj__badge--ok">{% render 'icon', name: 'check' %} Datos recibidos</span>
+        <h1 class="tj__h1"><span data-tj-done-name>Tu gato</span> ya es parte de esta historia <span aria-hidden="true">💙</span></h1>
+        <p class="tj__lead">Gracias por presentarnos a alguien tan especial. Recibimos sus datos para preparar una tarjeta dedicada a él y te la enviaremos al correo que nos dejaste.</p>
+        <div class="tj__last">
+          <strong>Último paso: envíanos su foto</strong>
+          <p>Toca el botón, se abre nuestro WhatsApp con el mensaje listo y solo adjuntas la foto.</p>
+          <a class="btn tj__wa" href="https://wa.me/{{ wa_num }}" target="_blank" rel="noopener" data-tj-wa>{% render 'icon', name: 'camera' %} Enviar su foto por WhatsApp</a>
+        </div>
+        <p class="tj__fine">Tu pedido ya quedó registrado; con esto no necesitas hacer nada más.</p>
+        <a class="link" href="{{ routes.root_url }}">Volver a la tienda</a>
+      </div>
+    {%- else -%}
+      <div class="tj__intro">
+        <span class="tj__badge tj__badge--ok" data-tj-badge>{% render 'icon', name: 'check' %} <span data-tj-badge-txt>¡Pedido recibido!</span></span>
+        <p class="tj__thanks" data-tj-thanks>Gracias por tu compra</p>
+        <h1 class="tj__h1">Tenemos un detalle para tu gato</h1>
+        <p class="tj__lead">Personaliza <mark>gratis</mark> su tarjeta digital con su nombre y su foto. Te la enviamos por correo.</p>
+      </div>
+
+      <div class="tj__grid">
+        <div class="tj__preview">
+          <div class="tj__card" aria-live="polite">
+            <span class="tj__paw tj__paw--a" aria-hidden="true">🐾</span>
+            <div class="tj__photo">
+              <img data-tj-img src="{{ 'gatito-pelota-480.webp' | asset_url }}" alt="Vista previa de la foto de tu gato" width="480" height="480">
+            </div>
+            <div class="tj__msg">
+              <p class="tj__msg-title"><span data-tj-name>Tu gato</span>,<br>esto es<br>para ti.</p>
+              <span class="tj__heart" aria-hidden="true">♥</span>
+              <span class="tj__sign">Con cariño, <b>NUBIK</b></span>
+            </div>
+          </div>
+          <p class="tj__hint">Así podría verse la tarjeta de tu gato</p>
+          <p class="tj__sub">Un recuerdo especial, hecho para el protagonista de tu hogar.</p>
+        </div>
+
+        <div class="tj__form">
+          {%- if form.errors -%}
+            <div class="notice notice--err" role="alert">{% render 'icon', name: 'alert' %}<span>Revisa los datos: {{ form.errors | default_errors }}</span></div>
+          {%- endif -%}
+          <input type="hidden" name="contact[Asunto]" value="Tarjeta personalizada para el gato">
+          <input type="hidden" name="contact[Pedido]" value="" data-tj-order>
+
+          <label class="tj__field">
+            <span>¿Cómo se llama tu gato? *</span>
+            <input type="text" name="contact[Nombre del gato]" required maxlength="30" autocomplete="off" placeholder="Ej.: Simón" data-tj-name-input>
+          </label>
+
+          <fieldset class="tj__field">
+            <legend>¿Es macho o hembra?</legend>
+            <div class="tj__chips">
+              <label class="tj__chip"><input type="radio" name="contact[Género]" value="Macho"><span>Macho</span></label>
+              <label class="tj__chip"><input type="radio" name="contact[Género]" value="Hembra"><span>Hembra</span></label>
+              <label class="tj__chip"><input type="radio" name="contact[Género]" value="Prefiero no decir"><span>Prefiero no decir</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="tj__field">
+            <legend>¿Cómo es su personalidad? <small>Elige las que quieras</small></legend>
+            <div class="tj__chips" data-tj-traits>
+              {%- assign traits = 'Juguetón,Dormilón,Curioso,Cariñoso,Independiente,Glotón,Travieso,Tranquilo,Miedoso,Conversador' | split: ',' -%}
+              {%- for t in traits -%}
+                <label class="tj__chip"><input type="checkbox" value="{{ t }}"><span>{{ t }}</span></label>
+              {%- endfor -%}
+            </div>
+            <input type="hidden" name="contact[Personalidad]" value="" data-tj-traits-out>
+          </fieldset>
+
+          <label class="tj__field">
+            <span>¿Qué lo hace especial? <small>Opcional</small></span>
+            <input type="text" name="contact[Lo hace especial]" maxlength="120" placeholder="Ej.: Le encanta dormir en mi escritorio">
+          </label>
+
+          <div class="tj__field">
+            <span>Muéstranos al protagonista</span>
+            <label class="tj__upload">
+              <input type="file" accept="image/*" data-tj-file>
+              {% render 'icon', name: 'camera' %} <span data-tj-file-label>Elegir su foto</span>
+            </label>
+            <small class="tj__help">La ves en la tarjeta de arriba. Al final te pedimos enviárnosla por WhatsApp.</small>
+          </div>
+
+          <label class="tj__field">
+            <span>¿A qué correo te enviamos su tarjeta? *</span>
+            <input type="email" name="contact[email]" required autocomplete="email" placeholder="tucorreo@ejemplo.com">
+          </label>
+
+          <p class="tj__fine">Usaremos estos datos para personalizar y enviarte su tarjeta. No publicaremos su foto sin tu permiso.</p>
+          <button class="btn tj__submit" type="submit">Enviar datos para su tarjeta</button>
+          <a class="tj__skip" href="{{ routes.root_url }}">Ahora no</a>
+          <p class="tj__opt">Opcional · Sin costo adicional</p>
+        </div>
+      </div>
+    {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+<style>
+  .tj { background: var(--crema); padding: 40px 0 72px; }
+  .tj__wrap { max-width: 1040px; margin: 0 auto; padding: 0 var(--gutter); }
+  .tj__intro, .tj__done { text-align: center; max-width: 640px; margin: 0 auto; }
+  .tj__badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 999px; font-weight: 800; font-size: 1.05rem; }
+  .tj__badge--ok { background: #E3F4EA; color: var(--ok); }
+  .tj__badge svg { width: 20px; height: 20px; }
+  .tj__thanks { margin: 8px 0 0; color: var(--gris); }
+  .tj__h1 { font-family: var(--f-title); color: var(--noche); font-size: clamp(2rem, 6vw, 3.1rem); line-height: 1.05; margin: 12px 0 10px; }
+  .tj__lead { font-size: 1.15rem; color: var(--noche); margin: 0 auto; max-width: 34ch; }
+  .tj__lead mark { background: var(--rosa-soft); color: var(--noche); padding: 0 8px; border-radius: 8px; font-weight: 800; }
+  .tj__grid { display: grid; gap: 32px; margin-top: 32px; align-items: start; }
+  @media (min-width: 900px) { .tj__grid { grid-template-columns: 1fr 1fr; gap: 48px; } .tj__preview { position: sticky; top: 96px; } }
+  .tj__card { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: center; background: #fff; border: 3px solid var(--nube-mid);
+    border-radius: 22px; padding: 16px; box-shadow: 0 18px 40px rgba(31,58,95,.12); transform: rotate(-2deg); }
+  .tj__photo { aspect-ratio: 1; border-radius: 50% 46% 52% 44% / 48% 52% 46% 50%; overflow: hidden; background: var(--nube-mid); }
+  .tj__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tj__msg { text-align: center; }
+  .tj__msg-title { font-family: var(--f-title); color: var(--noche); font-size: clamp(1.4rem, 4vw, 1.9rem); line-height: 1.05; margin: 0; word-break: break-word; }
+  .tj__heart { display: block; color: var(--rosa); font-size: 1.8rem; line-height: 1.2; }
+  .tj__sign { display: inline-block; background: var(--nube-soft); color: var(--noche); border-radius: 10px; padding: 6px 10px; font-size: .9rem; }
+  .tj__paw { position: absolute; font-size: 1.4rem; opacity: .7; }
+  .tj__paw--a { top: -14px; right: 18px; }
+  .tj__hint { text-align: center; color: var(--gris); font-style: italic; margin: 18px 0 4px; font-size: .95rem; }
+  .tj__sub { text-align: center; color: var(--noche); margin: 0; }
+  .tj__form { background: #fff; border-radius: 22px; padding: 22px; box-shadow: 0 10px 30px rgba(31,58,95,.08); }
+  .tj__field { display: block; border: 0; padding: 0; margin: 0 0 18px; }
+  .tj__field > span, .tj__field legend { display: block; font-weight: 800; color: var(--noche); margin-bottom: 8px; }
+  .tj__field small { font-weight: 400; color: var(--gris); }
+  .tj__field input[type=text], .tj__field input[type=email] { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; font: inherit; background: var(--crema); }
+  .tj__field input:focus { outline: 2px solid var(--nube); border-color: var(--nube); }
+  .tj__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tj__chip input { position: absolute; opacity: 0; pointer-events: none; }
+  .tj__chip span { display: inline-block; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--crema); cursor: pointer; font-weight: 700; color: var(--noche); }
+  .tj__chip input:checked + span { background: var(--nube-mid); border-color: var(--nube); }
+  .tj__chip input:focus-visible + span { outline: 2px solid var(--noche); }
+  .tj__upload { position: relative; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px; border: 2px dashed var(--nube); border-radius: 14px; background: var(--nube-soft); cursor: pointer; font-weight: 800; color: var(--noche); }
+  .tj__upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .tj__upload svg { width: 22px; height: 22px; }
+  .tj__help { display: block; margin-top: 6px; }
+  .tj__fine { color: var(--gris); font-size: .9rem; }
+  .tj__submit { width: 100%; justify-content: center; background: var(--nube); color: var(--noche); font-size: 1.15rem; padding: 16px; }
+  .tj__skip { display: block; text-align: center; margin-top: 14px; color: var(--noche); font-weight: 700; text-decoration: underline; }
+  .tj__opt { text-align: center; color: var(--gris); font-size: .85rem; margin: 6px 0 0; }
+  .tj__last { background: #fff; border-radius: 18px; padding: 20px; margin: 22px 0; box-shadow: 0 10px 30px rgba(31,58,95,.08); }
+  .tj__last p { margin: 6px 0 14px; color: var(--gris); }
+  .tj__wa { background: #25D366; color: #fff; }
+  .tj__wa svg { width: 20px; height: 20px; }
+</style>
+
+<script>
+(function () {
+  var root = document.getElementById('tarjeta'); if (!root) return;
+  var KEY = 'nubik_tarjeta';
+  var params = new URLSearchParams(location.search);
+  var order = (params.get('pedido') || '').replace(/[^#\w-]/g, '').slice(0, 20);
+  function read() { try { return JSON.parse(sessionStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
+  function save(o) { try { sessionStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
+
+  var done = root.querySelector('[data-tj-done]');
+  if (done) {
+    var d = read();
+    var nm = d.name || 'Tu gato';
+    root.querySelector('[data-tj-done-name]').textContent = nm.charAt(0).toUpperCase() + nm.slice(1);
+    var txt = 'Hola NUBIK 💙 Aquí va la foto de ' + nm + ' para su tarjeta' + (d.order ? ' (pedido ' + d.order + ')' : '') + '.';
+    var wa = root.querySelector('[data-tj-wa]');
+    wa.href = wa.href.split('?')[0] + '?text=' + encodeURIComponent(txt);
+    return;
+  }
+
+  if (!order) {
+    var bt = root.querySelector('[data-tj-badge-txt]'); if (bt) bt.textContent = 'Regalo para clientes NUBIK';
+    var th = root.querySelector('[data-tj-thanks]'); if (th) th.textContent = 'Si ya compraste, este detalle es para tu gato';
+  }
+  var form = root.querySelector('[data-tj-form]') || root.querySelector('form');
+  var orderInput = root.querySelector('[data-tj-order]');
+  if (orderInput) orderInput.value = order;
+  var nameIn = root.querySelector('[data-tj-name-input]');
+  var nameOut = root.querySelector('[data-tj-name]');
+  nameIn && nameIn.addEventListener('input', function () {
+    var v = nameIn.value.trim();
+    nameOut.textContent = v ? v.charAt(0).toUpperCase() + v.slice(1) : 'Tu gato';
+  });
+
+  var file = root.querySelector('[data-tj-file]');
+  var img = root.querySelector('[data-tj-img]');
+  var fileLabel = root.querySelector('[data-tj-file-label]');
+  file && file.addEventListener('change', function () {
+    var f = file.files && file.files[0]; if (!f) return;
+    if (!/^image\//.test(f.type)) { fileLabel.textContent = 'Ese archivo no es una foto'; return; }
+    img.src = URL.createObjectURL(f);
+    img.alt = 'Foto de tu gato';
+    fileLabel.textContent = 'Cambiar foto';
+  });
+
+  var traitsOut = root.querySelector('[data-tj-traits-out]');
+  form && form.addEventListener('submit', function () {
+    var picked = Array.prototype.map.call(root.querySelectorAll('[data-tj-traits] input:checked'), function (i) { return i.value; });
+    if (traitsOut) traitsOut.value = picked.join(', ');
+    if (file) file.removeAttribute('name');
+    save({ name: nameIn ? nameIn.value.trim() : '', order: order });
+  });
+})();
+</script>
+
+{% schema %}
+{ "name": "Tarjeta para tu gato", "settings": [], "presets": [{ "name": "Tarjeta para tu gato" }] }
+{% endschema %}

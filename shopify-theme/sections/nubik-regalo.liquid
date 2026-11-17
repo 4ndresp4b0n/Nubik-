@@ -1,0 +1,27 @@
+{%- assign home = routes.root_url | append: '/' | replace: '//', '/' -%}
+<section class="section section--white regalo" id="regalo">
+  <div class="wrap regalo__in">
+    <div class="regalo__art reveal">
+      {% render 'img', name: 'tarjeta-ejemplo', alt: 'Ejemplo de tarjeta digital NUBIK: «Simón, esto es para ti», con la foto del gato, su frase y su personalidad', sizes: '(min-width: 900px) 560px, 92vw' %}
+      <p class="regalo__cap">Así se ve una tarjeta NUBIK</p>
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">Un detalle extra</span>
+      <h2 class="h2">Con tu compra, un regalo para tu gato</h2>
+      <p class="lead">Después de comprar te invitamos a crear su tarjeta digital, con su nombre, su foto y lo que lo hace especial. Te la enviamos por correo, sin costo adicional.</p>
+      <ol class="regalo__steps">
+        <li><b>1</b><span><strong>Compra tu pelota o tu combo.</strong> Te llega el correo de confirmación con la invitación.</span></li>
+        <li><b>2</b><span><strong>Cuéntanos de tu gato.</strong> Su nombre, cómo es y una foto.</span></li>
+        <li><b>3</b><span><strong>Recibe su tarjeta.</strong> La preparamos y te la enviamos a tu correo.</span></li>
+      </ol>
+      <div class="btn-row">
+        <a class="btn btn--nube" href="{{ home }}products/{{ settings.combo_handle }}">Ver el combo</a>
+        <a class="btn btn--ghost" href="{{ home }}pages/tarjeta">¿Ya compraste? Crea su tarjeta</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Regalo: tarjeta del gato", "settings": [], "presets": [{ "name": "Regalo: tarjeta del gato" }] }
+{% endschema %}

@@ -186,7 +186,7 @@ def order_card(o: dict) -> str:
 <div class="top"><div><div class="id">{e(o['id'])}</div><div class="date">{e(created)}</div></div>
 <span class="badge">{e(STATUSES.get(st, st))}</span></div>
 <div class="grid">
-<div><h3>Productos</h3><ul>{items}</ul><p class="total">Total: {money(p.get('total', 0))} COP <span class="muted">· envío gratis · {e(method)}</span></p>
+<div><h3>Productos</h3><ul>{items}</ul><p class="total">Total: {money(p.get('total', 0))} COP <span class="muted">· envío {money(p.get('shipping', 0))} · {e(method)}</span></p>
 {f'<p class="muted">Margen estimado: {money(internal["marginBeforeOtherExpenses"])} (antes de pasarela, impuestos y otros gastos)</p>' if "marginBeforeOtherExpenses" in internal else ''}</div>
 <div><h3>Cliente</h3><p style="margin:0"><strong>{e(c.get('nombre'))}</strong><br>Cel. {e(c.get('celular'))}{('<br>' + e(c.get('email'))) if c.get('email') else ''}</p>
 <h3 style="margin-top:10px">Entrega</h3><p style="margin:0">{e(addr)}</p>
@@ -220,7 +220,7 @@ def build_email(order: dict, site_url: str) -> EmailMessage:
         f"Nuevo pedido en la tienda NUBIK\n\n"
         f"Pedido: {order['id']}\nFecha: {order['createdAt']}\n"
         f"Pago: {order.get('paymentMethodRequested')} (pendiente de verificar)\n{check}\n"
-        f"Productos:\n{lines}\nTotal: {money(p['total'])} COP (envío gratis)\n\n"
+        f"Productos:\n{lines}\nTotal: {money(p['total'])} COP (incluye envío {money(p.get('shipping', 0))})\n\n"
         f"Cliente: {c['nombre']}\nCelular: {c['celular']}\n"
         f"Entrega: {c['direccion']} {c.get('detalle', '')}, {c['ciudad']}, {c['departamento']}\n"
         f"{('Notas: ' + c['notas']) if c.get('notas') else ''}\n\n"

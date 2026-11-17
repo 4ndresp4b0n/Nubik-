@@ -3,7 +3,7 @@
     <span class="eyebrow">Envíos y pagos</span>
     <h2 class="h2 reveal">Compra con tranquilidad</h2>
     {% render 'trust-cards' %}
-    <p class="muted small" style="margin-top:18px">Los tiempos de entrega son estimados y dependen de la transportadora. No ofrecemos pago contra entrega. <a class="link" href="{{ routes.root_url }}pages/envios-y-garantias">Ver horarios de despacho</a></p>
+    <p class="muted small" style="margin-top:18px">Los tiempos de entrega son estimados y dependen de la transportadora. No ofrecemos pago contra entrega. <a class="link" href="{{ routes.root_url | append: '/' | replace: '//', '/' }}pages/envios-y-garantias">Ver horarios de despacho</a></p>
   </div>
 </section>
 

@@ -8,8 +8,8 @@
     </div>
     <div class="reveal">
       <span class="eyebrow">Pelota interactiva</span>
-      <h2 class="h2">El juego se mueve con NUBIK</h2>
-      <p class="lead">Haz que los momentos de juego de tu gato sean más dinámicos con su movimiento automático y sus tres modos.</p>
+      <h2 class="h2">Un compañero de juego que se mueve solo</h2>
+      <p class="lead">Para esos ratos en que tú no puedes jugar con él: la enciendes, se mueve sola y tiene tres modos para variar el juego.</p>
       <ul class="points">
         <li><span class="pi">{% render 'icon', name: 'move' %}</span><div><strong>Movimiento automático</strong><span>Se mueve sola para hacer el juego más dinámico.</span></div></li>
         <li><span class="pi">{% render 'icon', name: 'layers' %}</span><div><strong>Tres modos de funcionamiento</strong><span>Distintas opciones de entretenimiento.</span></div></li>
@@ -17,7 +17,7 @@
         <li><span class="pi">{% render 'icon', name: 'plug' %}</span><div><strong>Cargador incluido</strong><span>Viene en la caja junto con la pelota.</span></div></li>
       </ul>
       {%- if ball.id -%}
-        <div class="price-row"><span class="price">{{ ball.price | money_without_trailing_zeros }}<small>COP</small></span><span class="ship-note">{% render 'icon', name: 'truck' %} Envío gratis</span></div>
+        <div class="price-row"><span class="price">{{ ball.price | money_without_trailing_zeros }}<small>COP</small></span><span class="ship-note">{% render 'icon', name: 'truck' %} Envío {{ settings.ball_ship_cost }}</span></div>
         <div class="btn-row">
           {% render 'add-button', product: ball, class: 'btn' %}
           <a class="btn btn--ghost" href="{{ ball.url }}">Ver detalles</a>

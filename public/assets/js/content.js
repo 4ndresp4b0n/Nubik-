@@ -17,11 +17,11 @@ export function faqs(cfg, products) {
     { q: '¿Puedo comprar el guante quitapelos por separado?',
       a: `<p>No. El guante quitapelos se ofrece únicamente dentro del Combo NUBIK, junto con la pelota interactiva.</p>` },
     { q: '¿Qué incluye el combo?',
-      a: `<p>El Combo NUBIK incluye una pelota interactiva (con su cargador) y un guante quitapelos, por ${money(combo)} COP con envío gratis. La pelota también está disponible sola por ${money(ball)} COP.</p>` },
+      a: `<p>El Combo NUBIK incluye una pelota interactiva (con su cargador) y un guante quitapelos, por ${money(combo)} COP más ${money(cfg.shipping.customerPrice)} de envío. Si compras el combo, puedes pedir una pelota extra por ${money(cfg.extraBall.price)} escribiéndonos por WhatsApp. La pelota también está disponible sola por ${money(ball)} COP más envío.</p>` },
     { q: '¿Cuánto tarda el envío?',
       a: `<p>Los tiempos son estimados y se cuentan en días hábiles desde el despacho: ${est}. La fecha exacta de entrega depende de la transportadora, por eso no podemos garantizarla.</p><p><a class="link" href="/envios-y-garantias">Ver horarios de despacho</a></p>` },
     { q: '¿El envío tiene algún costo?',
-      a: `<p>No. El envío es gratis para ti: NUBIK asume su costo.</p>` },
+      a: `<p>Sí. El envío cuesta ${money(cfg.shipping.customerPrice)} COP por pedido a toda Colombia y lo ves sumado antes de pagar.</p>` },
     { q: cfg.payments.transferReady ? '¿Qué medios de pago aceptan?' : '¿Qué medios de pago estarán disponibles?',
       a: cfg.payments.transferReady
         ? `<p>Por ahora recibimos pagos por <strong>transferencia bancaria</strong>: al registrar tu pedido te mostramos los datos de la cuenta y el valor exacto. Tu pedido se confirma cuando verificamos el pago. No ofrecemos pago contra entrega.</p>`
@@ -30,8 +30,8 @@ export function faqs(cfg, products) {
       a: `<p>Escríbenos por WhatsApp al <a class="link" href="${cfg.contact.whatsappUrl}" target="_blank" rel="noopener">${cfg.contact.whatsappDisplay}</a> e indícanos tu número de solicitud (empieza por NBK-).</p>` },
     { q: '¿Cómo funciona la garantía?',
       a: `<p>${cfg.warranty.summary} Mientras publicamos la política definitiva, si tu producto presenta un problema escríbenos por WhatsApp y te indicaremos el procedimiento.</p><p>Esta cobertura comercial no limita los derechos de garantía que te reconoce la ley colombiana como consumidor.</p><p><a class="link" href="/envios-y-garantias#garantia">Ver detalles</a></p>` },
-    { q: '¿Qué incluye el Dúo de pelotas?',
-      a: `<p>Dos pelotas interactivas NUBIK, cada una con su cargador, por ${money(products['duo-pelotas'].price)} COP con envío gratis. Es ideal si tienes dos gatos o si quieres tener una pelota lista mientras la otra se carga.</p>` },
+    { q: '¿Qué es la tarjeta para mi gato?',
+      a: `<p>Es un detalle de NUBIK incluido con tu compra: después de comprar nos cuentas cómo se llama tu gato, cómo es y nos mandas su foto por WhatsApp. Te preparamos una tarjeta digital dedicada a él y te la enviamos por correo, sin costo adicional.</p>` },
   ];
 }
 
@@ -63,11 +63,11 @@ export function legal(page, cfg, products) {
       <h2>1. Identificación</h2>
       <p>Tienda online NUBIK — [razón social, NIT y domicilio — pendientes].</p>
       <h2>2. Productos y precios</h2>
-      <p>Los precios se expresan en pesos colombianos (COP). Pelota interactiva NUBIK: ${money(products['pelota-interactiva'].price)} COP. Combo NUBIK (pelota interactiva + guante quitapelos): ${money(products['combo-nubik'].price)} COP. Dúo de pelotas interactivas (2 pelotas, cada una con su cargador): ${money(products['duo-pelotas'].price)} COP. El guante quitapelos no se vende individualmente. [Tratamiento de impuestos — pendiente de confirmar].</p>
+      <p>Los precios se expresan en pesos colombianos (COP). Pelota interactiva NUBIK: ${money(products['pelota-interactiva'].price)} COP. Combo NUBIK (pelota interactiva + guante quitapelos): ${money(products['combo-nubik'].price)} COP. A ambos se suma el envío de ${money(cfg.shipping.customerPrice)} COP por pedido. Quien compra el combo puede pedir una pelota extra por ${money(cfg.extraBall.price)} COP por WhatsApp. El guante quitapelos no se vende individualmente. [Tratamiento de impuestos — pendiente de confirmar].</p>
       <h2>3. Proceso de compra</h2>
       <p>Al finalizar el formulario registras una <strong>solicitud de pedido</strong>. La solicitud no implica pago ni confirmación: el pedido se considera confirmado únicamente cuando NUBIK verifica el pago y te lo comunica. Los pagos online están pendientes de habilitación. No se ofrece pago contra entrega.</p>
       <h2>4. Envíos</h2>
-      <p>El envío es gratis para el cliente dentro de Colombia. Los tiempos de entrega son estimados y dependen de la transportadora. Consulta <a class="link" href="/envios-y-garantias">Envíos y garantías</a>.</p>
+      <p>Enviamos a toda Colombia. El envío cuesta ${money(cfg.shipping.customerPrice)} COP por pedido. Los tiempos de entrega son estimados y dependen de la transportadora. Consulta <a class="link" href="/envios-y-garantias">Envíos y garantías</a>.</p>
       <h2>5. Garantía, cambios y retracto</h2>
       <p>Consulta <a class="link" href="/cambios-y-devoluciones">Cambios y devoluciones</a>. Estas condiciones no limitan los derechos del consumidor previstos en la ley colombiana (Estatuto del Consumidor, Ley 1480 de 2011).</p>
       <h2>6. Ley aplicable y contacto</h2>

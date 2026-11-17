@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NUBIK · Crear tarjeta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --nube:#7EC4EF; --noche:#1F3A5F; --rosa:#F6A5B5; --crema:#FBF8F3; --gris:#5B6678; --nube-soft:#E4F2FB; --nube-mid:#BFE1F6; --rosa-soft:#FDE8EC; --line:#E9E3D9; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--crema); color: var(--noche); font-family: Nunito, system-ui, sans-serif; }
+  header { padding: 18px 24px; display: flex; align-items: center; gap: 12px; }
+  header img { width: 56px; }
+  header h1 { font-family: Fredoka, sans-serif; margin: 0; font-size: 1.5rem; }
+  header p { margin: 0; color: var(--gris); font-size: .95rem; }
+  main { display: grid; gap: 24px; padding: 0 24px 40px; max-width: 1400px; margin: 0 auto; }
+  @media (min-width: 1000px) { main { grid-template-columns: 380px 1fr; } }
+  .panel { background: #fff; border-radius: 18px; padding: 20px; box-shadow: 0 8px 24px rgba(31,58,95,.08); }
+  label { display: block; font-weight: 800; margin: 0 0 6px; }
+  .f { margin-bottom: 16px; }
+  input[type=text], textarea, select { width: 100%; padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 10px; font: inherit; background: var(--crema); color: var(--noche); }
+  textarea { min-height: 60px; resize: vertical; }
+  small { color: var(--gris); font-weight: 400; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .row label { font-weight: 700; display: inline-flex; gap: 6px; align-items: center; margin: 0; }
+  input[type=range] { width: 100%; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 999px; padding: 12px 20px; font: 800 1rem Nunito, sans-serif; cursor: pointer; background: var(--noche); color: #fff; }
+  .btn--nube { background: var(--nube); color: var(--noche); }
+  .btn--ghost { background: transparent; color: var(--noche); border: 2px solid var(--noche); }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .drop { display: block; text-align: center; padding: 18px; border: 2px dashed var(--nube); border-radius: 14px; background: var(--nube-soft); cursor: pointer; font-weight: 800; }
+  .drop input { display: none; }
+  .stage { display: flex; flex-direction: column; gap: 16px; }
+  canvas { width: 100%; height: auto; border-radius: 18px; box-shadow: 0 18px 40px rgba(31,58,95,.15); background: #fff; }
+  .mail { white-space: pre-wrap; background: var(--crema); border-radius: 12px; padding: 14px; border: 1.5px solid var(--line); font-size: .95rem; }
+  .ok { color: #2F7A5B; font-weight: 800; margin-left: 8px; }
+  h2 { font-family: Fredoka, sans-serif; margin: 0 0 12px; font-size: 1.2rem; }
+</style>
+</head>
+<body>
+<header>
+  <img src="__LOGO__" alt="">
+  <div><h1>Crear tarjeta para el gato</h1><p>Copia los datos del correo "Nuevo mensaje de cliente". La foto no sale de tu computador.</p></div>
+</header>
+<main>
+  <section class="panel">
+    <div class="f"><label for="name">Nombre del gato</label><input id="name" type="text" maxlength="24" value="Simón"></div>
+    <div class="f"><label>Género</label>
+      <div class="row">
+        <label><input type="radio" name="g" value="m" checked> Macho</label>
+        <label><input type="radio" name="g" value="h"> Hembra</label>
+        <label><input type="radio" name="g" value="n"> No dijo</label>
+      </div></div>
+    <div class="f"><label for="traits">Personalidad <small>separadas por coma, máximo 4</small></label><input id="traits" type="text" value="Juguetón, Dormilón"></div>
+    <div class="f"><label for="special">Lo hace especial <small>opcional</small></label><textarea id="special" maxlength="90">Le encanta dormir en mi escritorio</textarea></div>
+    <div class="f"><label class="drop">📷 Elegir la foto que te mandó por WhatsApp<input id="file" type="file" accept="image/*"></label></div>
+    <div class="f"><label for="zoom">Acercar foto</label><input id="zoom" type="range" min="1" max="3" step="0.01" value="1"></div>
+    <div class="f"><label for="px">Mover foto ↔</label><input id="px" type="range" min="-1" max="1" step="0.01" value="0"></div>
+    <div class="f"><label for="py">Mover foto ↕</label><input id="py" type="range" min="-1" max="1" step="0.01" value="0"></div>
+    <div class="f"><label for="theme">Color de la tarjeta</label>
+      <select id="theme"><option value="nube">Azul nube</option><option value="rosa">Rosa</option><option value="crema">Crema</option></select></div>
+    <div class="btns">
+      <button class="btn" id="dl">⬇ Descargar tarjeta</button>
+    </div>
+  </section>
+
+  <section class="stage">
+    <canvas id="c" width="1600" height="1000" aria-label="Vista previa de la tarjeta"></canvas>
+    <div class="panel">
+      <h2>Texto para el correo</h2>
+      <div class="mail" id="mail"></div>
+      <div class="btns"><button class="btn btn--nube" id="copy">Copiar texto</button><span class="ok" id="copied" hidden>¡Copiado!</span></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var W = 1600, H = 1000;
+  var c = document.getElementById('c'), x = c.getContext('2d');
+  var $ = function (id) { return document.getElementById(id); };
+  var logo = new Image(); logo.src = '__LOGO__';
+  var photo = null;
+  var themes = {
+    nube:  { bg: '#E4F2FB', blob: '#BFE1F6', border: '#7EC4EF' },
+    rosa:  { bg: '#FDE8EC', blob: '#F9CAD4', border: '#F6A5B5' },
+    crema: { bg: '#FBF8F3', blob: '#BFE1F6', border: '#E9E3D9' }
+  };
+
+  function g() { return document.querySelector('input[name=g]:checked').value; }
+  function cap(s) { s = (s || '').trim(); return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+  function name() { return cap($('name').value) || 'Tu gato'; }
+  function traits() {
+    return $('traits').value.split(',').map(function (t) { return cap(t); }).filter(Boolean).slice(0, 4);
+  }
+  function word(m, h, n) { var v = g(); return v === 'h' ? h : v === 'm' ? m : n; }
+
+  function rr(px, py, w, h, r) { x.beginPath(); x.moveTo(px + r, py); x.arcTo(px + w, py, px + w, py + h, r); x.arcTo(px + w, py + h, px, py + h, r); x.arcTo(px, py + h, px, py, r); x.arcTo(px, py, px + w, py, r); x.closePath(); }
+
+  function blobPath(cx, cy, r) {
+    x.beginPath();
+    x.ellipse(cx, cy, r, r * 0.97, -0.12, 0, Math.PI * 2);
+    x.closePath();
+  }
+
+  function wrap(text, maxW, font) {
+    x.font = font; var words = text.split(' '), lines = [], line = '';
+    words.forEach(function (w) { var t = line ? line + ' ' + w : w; if (x.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
+    if (line) lines.push(line); return lines;
+  }
+
+  function paw(px, py, s, col) {
+    x.fillStyle = col; x.beginPath(); x.ellipse(px, py, s * .9, s * .75, 0, 0, Math.PI * 2); x.fill();
+    [[-1.0, -1.1], [-.35, -1.55], [.35, -1.55], [1.0, -1.1]].forEach(function (o) { x.beginPath(); x.ellipse(px + o[0] * s, py + o[1] * s, s * .32, s * .4, 0, 0, Math.PI * 2); x.fill(); });
+  }
+  function heart(px, py, s, col) {
+    x.fillStyle = col; x.beginPath(); x.moveTo(px, py + s * .35);
+    x.bezierCurveTo(px - s, py - s * .35, px - s * .45, py - s, px, py - s * .45);
+    x.bezierCurveTo(px + s * .45, py - s, px + s, py - s * .35, px, py + s * .35); x.fill();
+  }
+
+  function draw() {
+    var t = themes[$('theme').value];
+    x.clearRect(0, 0, W, H);
+    // fondo
+    x.fillStyle = t.bg; x.fillRect(0, 0, W, H);
+    paw(120, 140, 26, 'rgba(126,196,239,.55)'); paw(1490, 880, 30, 'rgba(126,196,239,.55)');
+    heart(1500, 150, 34, 'rgba(246,165,181,.8)'); heart(110, 880, 28, 'rgba(246,165,181,.8)');
+    // tarjeta blanca
+    x.save(); x.shadowColor = 'rgba(31,58,95,.18)'; x.shadowBlur = 40; x.shadowOffsetY = 14;
+    rr(70, 70, W - 140, H - 140, 46); x.fillStyle = '#fff'; x.fill(); x.restore();
+    rr(70, 70, W - 140, H - 140, 46); x.lineWidth = 8; x.strokeStyle = t.border; x.stroke();
+
+    // foto en mancha
+    var cx = 450, cy = 500, r = 320;
+    x.save(); blobPath(cx + 18, cy + 14, r + 26); x.fillStyle = t.blob; x.fill(); x.restore();
+    x.save(); blobPath(cx, cy, r + 10); x.fillStyle = '#fff'; x.fill(); x.restore();
+    x.save(); blobPath(cx, cy, r); x.clip();
+    if (photo) {
+      var z = +$('zoom').value, s = Math.max((2 * r) / photo.width, (2 * r) / photo.height) * z;
+      var dw = photo.width * s, dh = photo.height * s;
+      var ox = (+$('px').value) * (dw - 2 * r) / 2, oy = (+$('py').value) * (dh - 2 * r) / 2;
+      x.drawImage(photo, cx - dw / 2 - ox, cy - dh / 2 - oy, dw, dh);
+    } else {
+      x.fillStyle = '#F1F6FA'; x.fillRect(cx - r, cy - r, 2 * r, 2 * r);
+      x.fillStyle = '#5B6678'; x.font = '700 34px Nunito'; x.textAlign = 'center'; x.fillText('Aquí va su foto', cx, cy + 10);
+    }
+    x.restore();
+
+    // texto
+    var tx = 860, maxW = 600;
+    x.textAlign = 'left'; x.fillStyle = '#1F3A5F';
+    var nm = name() + ',';
+    var size = 112; x.font = '700 ' + size + 'px Fredoka';
+    while (x.measureText(nm).width > maxW && size > 60) { size -= 4; x.font = '700 ' + size + 'px Fredoka'; }
+    var y = 250;
+    x.fillText(nm, tx, y);
+    x.font = '600 84px Fredoka'; y += 100; x.fillText('esto es para ti.', tx, y);
+    heart(tx + 640 - 60, y - 40, 30, '#F6A5B5');
+
+    y += 70;
+    var sp = $('special').value.trim();
+    if (sp) {
+      var lines = wrap('«' + sp + '»', maxW, 'italic 600 38px Nunito');
+      x.fillStyle = '#5B6678';
+      lines.slice(0, 3).forEach(function (l) { y += 48; x.fillText(l, tx, y); });
+      y += 20;
+    }
+
+    // chips de personalidad
+    var tr = traits();
+    if (tr.length) {
+      y += 30; var cxp = tx; x.font = '800 30px Nunito';
+      tr.forEach(function (w) {
+        var tw = x.measureText(w).width + 44;
+        if (cxp + tw > tx + maxW) { cxp = tx; y += 64; }
+        rr(cxp, y - 38, tw, 54, 27); x.fillStyle = t.blob; x.fill();
+        x.fillStyle = '#1F3A5F'; x.fillText(w, cxp + 22, y - 2); cxp += tw + 12;
+      });
+      y += 30;
+    }
+
+    // bienvenida y firma
+    x.fillStyle = '#1F3A5F'; x.font = '700 36px Nunito';
+    x.fillText(word('Bienvenido', 'Bienvenida', 'Bienvenid@') + ' a la familia NUBIK.', tx, Math.max(y + 60, 760));
+    var sy = 820;
+    rr(tx, sy, 400, 76, 20); x.fillStyle = '#E4F2FB'; x.fill();
+    x.fillStyle = '#1F3A5F'; x.font = '600 34px Nunito'; x.fillText('Con cariño,', tx + 24, sy + 50);
+    x.font = '700 38px Fredoka'; x.fillText('NUBIK', tx + 220, sy + 50);
+    if (logo.complete && logo.naturalWidth) x.drawImage(logo, tx + 420, sy - 8, 126, 90);
+
+    mail();
+  }
+
+  function mail() {
+    var n = name(), el = word('él', 'ella', 'tu gato');
+    $('mail').textContent =
+      'Asunto: ' + n + ', esto es para ti 💙\n\n' +
+      'Hola,\n\n' +
+      'Gracias por presentarnos a ' + n + '. Como te prometimos, le preparamos una tarjeta dedicada a ' + el + '; la encuentras adjunta en este correo.\n\n' +
+      'Ojalá la disfruten juntos y que la pelota NUBIK le regale muchos ratos de juego.\n\n' +
+      'Si quieres, compártenos una foto o un video de ' + n + ' jugando por WhatsApp al +57 318 452 6653. Solo la publicaríamos si nos das permiso.\n\n' +
+      'Con cariño,\nNUBIK';
+  }
+
+  $('file').addEventListener('change', function () {
+    var f = this.files && this.files[0]; if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function () { var im = new Image(); im.onload = function () { photo = im; $('zoom').value = 1; $('px').value = 0; $('py').value = 0; draw(); }; im.src = rd.result; };
+    rd.readAsDataURL(f);
+  });
+  ['name', 'traits', 'special', 'zoom', 'px', 'py', 'theme'].forEach(function (id) { $(id).addEventListener('input', draw); });
+  document.querySelectorAll('input[name=g]').forEach(function (r) { r.addEventListener('change', draw); });
+
+  $('dl').addEventListener('click', function () {
+    var a = document.createElement('a');
+    a.download = 'tarjeta-' + name().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-') + '.png';
+    a.href = c.toDataURL('image/png'); a.click();
+  });
+  $('copy').addEventListener('click', function () {
+    navigator.clipboard.writeText($('mail').textContent).then(function () { $('copied').hidden = false; setTimeout(function () { $('copied').hidden = true; }, 1800); });
+  });
+
+  logo.onload = draw;
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(draw);
+  draw();
+})();
+</script>
+</body>
+</html>

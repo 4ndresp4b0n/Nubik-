@@ -15,13 +15,13 @@ const STATIC = BOOT.static === true;
 const A = p => STATIC ? p.replace(/^\//, '') : p;
 const IMG = A('/assets/img/productos/');
 const ROUTE_HASH = {
-  '/': '', '/productos/pelota-interactiva': 'pelota-interactiva', '/combo-nubik': 'combo-nubik', '/duo-pelotas': 'duo-pelotas',
+  '/': '', '/productos/pelota-interactiva': 'pelota-interactiva', '/combo-nubik': 'combo-nubik',
   '/carrito': 'carrito', '/checkout': 'finalizar-pedido', '/preguntas-frecuentes': 'preguntas-frecuentes',
   '/envios-y-garantias': 'envios-y-garantias', '/privacidad': 'privacidad', '/terminos': 'terminos',
   '/cambios-y-devoluciones': 'cambios-y-devoluciones',
 };
 const HASH_ROUTE = Object.fromEntries(Object.entries(ROUTE_HASH).map(([p, h]) => [h, p]));
-const SECTION_ROUTE = { productos: '/', combo: '/', opciones: '/', momentos: '/', garantia: '/envios-y-garantias' };
+const SECTION_ROUTE = { productos: '/', combo: '/', opciones: '/', momentos: '/', 'te-suena': '/', regalo: '/', garantia: '/envios-y-garantias' };
 function staticHref(href) {
   const url = new URL(href, 'http://x');
   let path = url.pathname.replace(/\/+$/, '') || '/';
@@ -48,7 +48,8 @@ function quoteLocal(items) {
     lines.push({ id: it.id, sku: p.sku, name: p.name, qty: it.qty, unitPrice: p.price, lineTotal: p.price * it.qty });
   }
   const subtotal = lines.reduce((s, l) => s + l.lineTotal, 0);
-  return { lines, subtotal, shipping: 0, total: subtotal, currency: 'COP' };
+  const shipping = CFG.shipping.customerPrice || 0;
+  return { lines, subtotal, shipping, total: subtotal + shipping, currency: 'COP' };
 }
 const img = (name, alt, { w = 960, cls = '', eager = false, sizes = '' } = {}) =>
   `<img src="${IMG}${name}-${w}.webp" srcset="${IMG}${name}-480.webp 480w, ${IMG}${name}-960.webp 960w" ${sizes ? `sizes="${sizes}"` : ''} alt="${escapeHtml(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async" class="${cls}">`;
@@ -111,7 +112,7 @@ const logo = (cls = '', awake = false) => CFG.brand.logoAvailable
 
 const NAV = [
   ['/', 'Inicio'], ['/#productos', 'Productos'], ['/combo-nubik', 'Combo'],
-  ['/envios-y-garantias', 'Envíos y garantías'], ['/preguntas-frecuentes', 'Preguntas frecuentes'],
+  ['/envios-y-garantias', 'Envíos'], ['/preguntas-frecuentes', 'Preguntas'], ['/#regalo', 'Tarjeta para tu gato'],
 ];
 
 // Gatito del pie de página: abre los ojos y dice un mensaje cuando el pie de página está a la vista.
@@ -190,12 +191,12 @@ function renderShell() {
             <a class="brand" href="/" aria-label="NUBIK, ir al inicio">${logo('', true)}</a>
           </div>
           <p class="footer__slogan">${CFG.brand.slogan}.</p>
-          <p class="small">Productos para gatos y perros con envío gratis en ${CFG.brand.country}.</p>
+          <p class="small">Productos para gatos y perros. Envíos a toda ${CFG.brand.country}.</p>
         </div>
         <div><h4>Tienda</h4><ul>
           <li><a href="/productos/pelota-interactiva">Pelota interactiva</a></li>
           <li><a href="/combo-nubik">Combo NUBIK</a></li>
-          <li><a href="/duo-pelotas">Dúo de pelotas</a></li>
+          <li><a href="/#regalo">Tarjeta para tu gato</a></li>
           <li><a href="/carrito">Carrito</a></li></ul></div>
         <div><h4>Ayuda</h4><ul>
           <li><a href="/envios-y-garantias">Envíos</a></li>
@@ -207,7 +208,12 @@ function renderShell() {
           <li><a href="/terminos">Términos y condiciones</a></li>
           <li><a href="/cambios-y-devoluciones">Cambios y devoluciones</a></li></ul></div>
       </div>
-      <div class="footer__bottom"><span>© ${new Date().getFullYear()} NUBIK · Colombia</span><span>Envío gratis · Sin pago contra entrega</span></div>
+      <div class="footer__bottom"><span>© ${new Date().getFullYear()} NUBIK · Colombia</span><span>Envíos a toda Colombia · Sin pago contra entrega</span></div>
+      <a class="footer__extra" href="${waLink(WA, `Hola NUBIK, compré el Combo NUBIK y quiero pedir la pelota extra por ${money(EXTRA)}. Mi número de pedido es: `)}" target="_blank" rel="noopener">
+        <span class="footer__extra-ico">${icon('sparkle')}</span>
+        <span><strong>¿Compraste el Combo NUBIK?</strong> Pide una pelota extra por solo ${money(EXTRA)} escribiéndonos por WhatsApp.</span>
+        <span class="footer__extra-cta">${icon('chat')} Pedirla</span>
+      </a>
     </div>`;
   mountMascot();
 
@@ -236,11 +242,12 @@ function toast(msg, withCart = false) {
 }
 
 // ------------------------------------------------------------------ piezas reutilizables
-const ball = PRODUCTS['pelota-interactiva'], combo = PRODUCTS['combo-nubik'], duo = PRODUCTS['duo-pelotas'];
-const INCLUDES_TEXT = { 'combo-nubik': 'Incluye pelota + cargador y guante quitapelos', 'duo-pelotas': 'Incluye 2 pelotas, cada una con su cargador' };
-const ADD_LABEL = { 'combo-nubik': 'Quiero el combo', 'duo-pelotas': 'Quiero el dúo' };
-const COMBO_EXTRA = combo.price - ball.price;          // lo que cuesta sumar el guante
-const DUO_SAVING = ball.price * 2 - duo.price;         // ahorro real frente a 2 pelotas sueltas
+const ball = PRODUCTS['pelota-interactiva'], combo = PRODUCTS['combo-nubik'];
+const INCLUDES_TEXT = { 'combo-nubik': 'Incluye pelota + cargador y guante quitapelos' };
+const ADD_LABEL = { 'combo-nubik': 'Quiero el combo' };
+const SHIP = CFG.shipping.customerPrice || 0;          // envío fijo por pedido
+const EXTRA = CFG.extraBall ? CFG.extraBall.price : 20000; // pelota extra por WhatsApp, solo con el combo
+const shipText = SHIP ? `Envío ${money(SHIP)}` : 'Envío gratis';
 
 // Tarjetas para elegir entre las tres opciones (sin descuentos inventados: solo diferencias reales de precio)
 function choiceCards() {
@@ -254,10 +261,9 @@ function choiceCards() {
       <div class="choice__btns"><button class="btn${hi ? ' btn--nube' : ''}" data-add="${p.id}">${icon('bag')} ${ADD_LABEL[p.id] || 'Añadir al carrito'}</button>
       <a class="link" href="${p.path}">Ver detalles</a></div>
     </article>`;
-  return `<div class="choices">
-    ${card(ball, '', 'Una pelota interactiva con su cargador.')}
-    ${card(combo, 'Recomendado', `Pelota + guante quitapelos. Por ${money(COMBO_EXTRA)} más que la pelota sola.`, true)}
-    ${card(duo, 'Para 2 gatos', `Dos pelotas con su cargador. Ahorras ${money(DUO_SAVING)} frente a comprar 2 por separado.`)}
+  return `<div class="choices choices--2">
+    ${card(ball, '', `Una pelota interactiva con su cargador. + ${shipText}.`)}
+    ${card(combo, 'Recomendado', `Pelota + guante quitapelos. Además puedes pedir una pelota extra por ${money(EXTRA)} por WhatsApp. + ${shipText}.`, true)}
   </div>`;
 }
 
@@ -265,8 +271,7 @@ function choiceCards() {
 function upsell() {
   const card = (p, title, text) => `<a class="upsell__card" href="${p.path}">${img(p.image.split('/').pop().replace('-960.webp', ''), '', { w: 480, sizes: '72px' })}<span><strong>${title}</strong><span>${text}</span></span>${icon('arrow')}</a>`;
   return `<div class="upsell">
-    ${card(combo, `Combo NUBIK · ${money(combo.price)}`, `Por ${money(COMBO_EXTRA)} más llevas también el guante quitapelos.`)}
-    ${card(duo, `Dúo de pelotas · ${money(duo.price)}`, `¿Tienes dos gatos? Ahorras ${money(DUO_SAVING)} frente a comprar 2 por separado.`)}
+    ${card(combo, `Combo NUBIK · ${money(combo.price)}`, `Llevas también el guante quitapelos y puedes pedir una pelota extra por ${money(EXTRA)} por WhatsApp.`)}
   </div>`;
 }
 const freeShip = `<span class="ship-note">${icon('truck')} ${CFG.shipping.label}</span>`;
@@ -294,7 +299,8 @@ const comboIncl = `
   <ul class="incl">
     <li>${icon('check')} 1 pelota interactiva NUBIK + cargador</li>
     <li>${icon('check')} 1 guante quitapelos NUBIK <em>Solo en combo</em></li>
-    <li>${icon('truck')} Envío gratis a toda Colombia</li>
+    <li>${icon('truck')} Envío a toda Colombia: ${money(SHIP)}</li>
+    <li>${icon('chat')} Pelota extra por ${money(EXTRA)} vía WhatsApp <em>Solo en combo</em></li>
   </ul>`;
 
 function faqList(items) {
@@ -304,7 +310,7 @@ function faqList(items) {
 
 function trustCards() {
   return `<div class="trust">
-    <div class="tcard tcard--hi">${icon('truck')}<h3>Envío gratis</h3><p>No pagas envío. NUBIK asume su costo en todos los pedidos.</p></div>
+    <div class="tcard tcard--hi">${icon('truck')}<h3>Envío a toda Colombia</h3><p>El envío cuesta ${money(SHIP)} por pedido y lo ves sumado antes de pagar.</p></div>
     <div class="tcard">${icon('clock')}<h3>Entrega estimada</h3><p>${CFG.shipping.estimates.map(e => `${e.zone}: <strong>${e.businessDays}</strong>`).join('<br>')}.</p></div>
     <div class="tcard">${icon('card')}<h3>Medios de pago</h3>${TRANSFER ? '<p>Transferencia bancaria. Te damos los datos de la cuenta al hacer tu pedido.</p>' : `<p>${CFG.payments.methods.map(m => m.label).join(' y ')}.</p><span class="pill-pending">Pendientes de habilitación</span>`}</div>
     <div class="tcard">${icon('chat')}<h3>Atención por WhatsApp</h3><p>Resolvemos tus dudas antes y después de tu compra en el ${CFG.contact.whatsappDisplay}.</p></div>
@@ -361,21 +367,48 @@ views['/'] = () => `
     </div>
     <div class="vhero__shade" aria-hidden="true"></div>
     <div class="wrap vhero__copy">
-      <span class="vhero__eyebrow">${CFG.brand.slogan}</span>
-      <h1 class="vhero__title">Pequeños momentos.<br><span>Grandes ronroneos.</span></h1>
-      <p class="vhero__lead">Descubre nuevas formas de acompañar el juego y el cuidado de tu mascota con NUBIK.</p>
+      <span class="vhero__eyebrow">Para quienes aman a su gato</span>
+      <h1 class="vhero__title">Llegas cansado.<br><span>Él quiere jugar.</span></h1>
+      <p class="vhero__lead">Sabemos lo que se siente cuando el día no alcanza para todo. La pelota NUBIK se mueve sola para que tu gato tenga con qué jugar, y tú, un poco menos de culpa.</p>
       <div class="btn-row vhero__btns">
         <a class="btn btn--nube" href="/combo-nubik">Ver el combo</a>
-        <a class="btn btn--ghost-light" href="/productos/pelota-interactiva">Descubrir la pelota</a>
+        <a class="btn btn--ghost-light" href="/#te-suena">¿Te pasa esto?</a>
       </div>
-      <div class="vhero__feats"><span>Se mueve sola</span><span>3 modos</span><span>Cargador incluido</span><span>Envío gratis</span></div>
+      <div class="vhero__feats"><span>Se mueve sola</span><span>3 modos</span><span>Cargador incluido</span><span>Envíos a toda Colombia</span></div>
     </div>
     <div class="vhero__dots" role="group" aria-label="Videos de portada">
       ${HERO_VIDEOS.map((v, i) => `<button type="button" data-vid="${i}" aria-label="Ver video: ${v.label}" aria-pressed="${i === 0}"></button>`).join('')}
     </div>
   </section>
 
-  <div class="ribbon" aria-hidden="true"><div class="ribbon__track">${Array(2).fill(['Envío gratis en Colombia', 'Se mueve sola', 'Tres modos', 'Cargador incluido', 'Combo con guante quitapelos', CFG.brand.slogan].map(t => `<span>${t}</span>`).join('')).join('')}</div></div>
+  <div class="ribbon" aria-hidden="true"><div class="ribbon__track">${Array(2).fill(['Envíos a toda Colombia', 'Se mueve sola', 'Para cuando el día no te alcanza', 'Tres modos', 'Cargador incluido', `Con el combo: pelota extra por ${money(EXTRA)}`, CFG.brand.slogan].map(t => `<span>${t}</span>`).join('')).join('')}</div></div>
+
+  <section class="section section--white dolor" id="te-suena">
+    <div class="wrap">
+      <div class="center">
+        <span class="eyebrow">¿Te suena familiar?</span>
+        <h2 class="h2 reveal">Lo quieres muchísimo, pero el día no te alcanza</h2>
+        <p class="lead dolor__lead reveal">Trabajas, estudias, llegas cansado… y él sigue ahí, esperando que alguien juegue con él. Si te has sentido culpable por eso, no eres el único.</p>
+      </div>
+      <div class="cards dolor__cards">
+        <article class="card reveal"><div class="card__ico">${icon('clock')}</div><h3>Duerme todo el día…</h3><p>…y justo cuando tú quieres descansar, a él le dan ganas de correr por toda la casa.</p></article>
+        <article class="card reveal"><div class="card__ico">${icon('box')}</div><h3>Juguetes olvidados</h3><p>Le compras juguetes, los mira un rato y después se quedan quietos debajo del sofá.</p></article>
+        <article class="card reveal"><div class="card__ico">${icon('chat')}</div><h3>Esa mirada</h3><p>Te ve llegar, te sigue por la casa y tú sabes que te está pidiendo un rato de juego.</p></article>
+      </div>
+      <div class="dolor__answer reveal">
+        <div>
+          <span class="tag">No eres mal dueño</span>
+          <h3 class="dolor__title">Solo necesitas una ayudita</h3>
+          <p>La pelota NUBIK se mueve sola y tiene tres modos, así el juego no depende solo de ti. Tú la enciendes y ella hace el resto.</p>
+          <p class="muted small">¿Al principio no le hace caso? Es normal. Escríbenos por WhatsApp y te contamos cómo presentársela.</p>
+        </div>
+        <div class="btn-row">
+          <a class="btn" href="/productos/pelota-interactiva">Conocer la pelota</a>
+          <a class="btn btn--ghost" href="/combo-nubik">Ver el combo</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section class="section section--white" id="productos">
     <div class="wrap feature">
@@ -386,8 +419,8 @@ views['/'] = () => `
       </div>
       <div class="reveal">
         <span class="eyebrow">Pelota interactiva</span>
-        <h2 class="h2">El juego se mueve con NUBIK</h2>
-        <p class="lead">Haz que los momentos de juego de tu gato sean más dinámicos con su movimiento automático y sus tres modos.</p>
+        <h2 class="h2">Un compañero de juego que se mueve solo</h2>
+        <p class="lead">Para esos ratos en que tú no puedes jugar con él: la enciendes, se mueve sola y tiene tres modos para variar el juego.</p>
         ${ballPoints}
         <div class="price-row"><span class="price">${money(ball.price)}<small>COP</small></span>${freeShip}</div>
         <div class="btn-row">
@@ -404,14 +437,37 @@ views['/'] = () => `
         ${comboArt}
         <div>
           <span class="tag">Oferta destacada</span>
-          <h2 class="h2" style="margin-top:18px">Dos formas de cuidar sus momentos</h2>
-          <p class="lead">Juego y cuidado del pelaje en un solo paquete: la pelota interactiva y el guante quitapelos, juntos.</p>
+          <h2 class="h2" style="margin-top:18px">Juego para sus ratos activos, mimos para los tranquilos</h2>
+          <p class="lead">La pelota para cuando tiene energía y el guante para consentirlo mientras le quitas el pelo suelto. Dos formas de decirle que te importa.</p>
           ${comboIncl}
           <div class="price-row"><span class="price">${money(combo.price)}<small>COP</small></span></div>
           <div class="btn-row">
             <button class="btn btn--nube" data-add="combo-nubik">${icon('bag')} Quiero el combo</button>
             <a class="btn btn--ghost-light" href="/combo-nubik">Ver el combo</a>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--white regalo" id="regalo">
+    <div class="wrap regalo__in">
+      <div class="regalo__art reveal">
+        ${img('tarjeta-ejemplo', 'Ejemplo de tarjeta digital NUBIK: «Simón, esto es para ti», con la foto del gato, su frase y su personalidad', { sizes: '(min-width: 900px) 560px, 92vw' })}
+        <p class="regalo__cap">Así se ve una tarjeta NUBIK</p>
+      </div>
+      <div class="reveal">
+        <span class="eyebrow">Un detalle extra</span>
+        <h2 class="h2">Con tu compra, un regalo para tu gato</h2>
+        <p class="lead">Después de comprar te invitamos a crear su tarjeta digital, con su nombre, su foto y lo que lo hace especial. Te la enviamos por correo, sin costo adicional.</p>
+        <ol class="regalo__steps">
+          <li><b>1</b><span><strong>Compra tu pelota o tu combo.</strong> Al registrar tu pedido te invitamos a crear la tarjeta.</span></li>
+          <li><b>2</b><span><strong>Cuéntanos de tu gato.</strong> Su nombre, cómo es y una foto, por WhatsApp.</span></li>
+          <li><b>3</b><span><strong>Recibe su tarjeta.</strong> La preparamos y te la enviamos a tu correo.</span></li>
+        </ol>
+        <div class="btn-row">
+          <a class="btn btn--nube" href="/combo-nubik">Ver el combo</a>
+          <a class="btn btn--ghost" href="${waLink(WA, cardWaText())}" target="_blank" rel="noopener">${icon('chat')} ¿Ya compraste? Pide su tarjeta</a>
         </div>
       </div>
     </div>
@@ -428,7 +484,7 @@ views['/'] = () => `
   <section class="section" id="momentos">
     <div class="wrap">
       <span class="eyebrow">Momentos NUBIK</span>
-      <h2 class="h2 reveal" style="max-width:16ch">Juego y cuidado, todos los días</h2>
+      <h2 class="h2 reveal" style="max-width:16ch">Pequeños momentos que se vuelven rutina</h2>
       <div class="life">
         <figure class="life__big reveal">${img('vida-gato-pelota', 'Gato atrapando la pelota interactiva NUBIK sobre el piso de la sala', { sizes: '(min-width: 900px) 700px, 92vw' })}
           <figcaption><span class="tag">Juego</span> Pelota interactiva para gatos</figcaption></figure>
@@ -444,11 +500,11 @@ views['/'] = () => `
   <section class="section">
     <div class="wrap center">
       <span class="eyebrow">Beneficios</span>
-      <h2 class="h2 reveal">Pensado para sus pequeños grandes momentos</h2>
+      <h2 class="h2 reveal">Pensado para él, y también para ti</h2>
       <div class="cards">
-        <article class="card reveal"><div class="card__ico">${icon('move')}</div><h3>Entretenimiento</h3><p>Una pelota con movimiento automático y tres modos de funcionamiento para variar sus ratos de juego.</p></article>
-        <article class="card reveal"><div class="card__ico">${icon('hand')}</div><h3>Cuidado</h3><p>Un guante para ayudar a retirar el pelo suelto de perros y gatos durante su rutina de cuidado.</p></article>
-        <article class="card reveal"><div class="card__ico">${icon('truck')}</div><h3>Comodidad</h3><p>Compra online desde casa con envío gratis a toda Colombia.</p></article>
+        <article class="card reveal"><div class="card__ico">${icon('move')}</div><h3>Más ratos de juego</h3><p>Una pelota que se mueve sola y tiene tres modos, para que el juego no dependa solo de ti.</p></article>
+        <article class="card reveal"><div class="card__ico">${icon('hand')}</div><h3>Un momento de mimos</h3><p>Un guante para ayudar a retirar el pelo suelto de perros y gatos mientras lo consientes.</p></article>
+        <article class="card reveal"><div class="card__ico">${icon('truck')}</div><h3>Sin complicarte</h3><p>Compras desde casa, te llega a toda Colombia y resolvemos tus dudas por WhatsApp.</p></article>
       </div>
     </div>
   </section>
@@ -530,7 +586,8 @@ function productPage({ id, crumbs, eyebrow, title, intro, body, gallery }) {
           <a class="btn btn--ghost btn--block" data-wa-product="${id}" href="${waProduct(id)}" target="_blank" rel="noopener">${icon('chat')} Consultar por WhatsApp</a>
         </div>
         <div class="perks">
-          <div>${icon('truck')}<span><strong>Envío gratis.</strong> ${CFG.shipping.estimates.map(e => `${e.zone}: ${e.businessDays}`).join(' · ')} (estimado).</span></div>
+          <div>${icon('truck')}<span><strong>${shipText}.</strong> ${CFG.shipping.estimates.map(e => `${e.zone}: ${e.businessDays}`).join(' · ')} (estimado).</span></div>
+          ${id === 'combo-nubik' ? `<div>${icon('chat')}<span><strong>Pelota extra por ${money(EXTRA)}.</strong> Solo con el combo: después de tu compra, pídela por WhatsApp.</span></div>` : ''}
           <div>${icon('card')}<span>${payLine()}</span></div>
         </div>
         ${body}
@@ -538,7 +595,7 @@ function productPage({ id, crumbs, eyebrow, title, intro, body, gallery }) {
     </div>
   </div>
   <div class="stickybuy" aria-hidden="true">
-    <div class="stickybuy__txt"><strong>${p.shortName}</strong><span>${money(p.price)} COP · Envío gratis</span></div>
+    <div class="stickybuy__txt"><strong>${p.shortName}</strong><span>${money(p.price)} COP · ${shipText}</span></div>
     <button class="btn btn--sm" data-add="${id}" tabindex="-1">${icon('bag')} ${id === 'pelota-interactiva' ? 'Añadir' : ADD_LABEL[id].replace('Quiero el', 'Quiero el')}</button>
   </div>`;
 }
@@ -580,7 +637,7 @@ views['/productos/pelota-interactiva'] = () => productPage({
     </div>
     <div class="tabs-block">
       <h2 class="h3">Preguntas frecuentes</h2>
-      ${faqList(faqs(CFG, PRODUCTS).filter((_, i) => [0, 1, 2, 6, 8].includes(i)))}
+      ${faqList(faqs(CFG, PRODUCTS).filter((_, i) => [0, 1, 2, 6, 7].includes(i)))}
     </div>`,
 });
 
@@ -633,45 +690,10 @@ views['/combo-nubik'] = () => productPage({
     </div>
     <div class="tabs-block">
       <h2 class="h3">Preguntas frecuentes</h2>
-      ${faqList(faqs(CFG, PRODUCTS).filter((_, i) => [3, 4, 5, 6, 10].includes(i)))}
+      ${faqList(faqs(CFG, PRODUCTS).filter((_, i) => [3, 4, 5, 7, 10].includes(i)))}
     </div>`,
 });
 
-views['/duo-pelotas'] = () => productPage({
-  id: 'duo-pelotas', crumbs: '<span>Dúo de pelotas</span>', eyebrow: 'Para hogares con 2 gatos',
-  title: 'Dúo de pelotas interactivas NUBIK',
-  intro: 'Dos pelotas interactivas, cada una con su cargador: para que jueguen dos gatos a la vez, o para tener una lista mientras la otra se carga.',
-  gallery: [
-    ['duo-pelotas', 'Dos pelotas interactivas NUBIK azules'],
-    ['gatito-pelota', 'Gatito naranja persiguiendo la pelota interactiva NUBIK', true],
-    ['vida-gato-pelota', 'Gato atrapando la pelota interactiva NUBIK en la sala', true],
-    ['pelota-frontal', 'Pelota interactiva NUBIK azul'],
-    ['real-pelota-palma', 'Fotografía real de la pelota en la palma de la mano', true],
-    ['real-pelota-alfombra', 'Fotografía real de la pelota sobre una alfombra', true],
-  ],
-  body: `
-    <div class="notice notice--info">${icon('sparkle')}<span><strong>Ahorras ${money(DUO_SAVING)}</strong> frente a comprar 2 pelotas por separado (${money(ball.price * 2)} COP).</span></div>
-    <div class="notice notice--info">${icon('battery')}<span><strong>Recuerda cargarlas antes de usarlas:</strong> cada pelota trae su cargador.</span></div>
-    <div class="tabs-block">
-      <h2 class="h3">Qué incluye</h2>
-      <ul class="spec">
-        <li>${icon('check')} <span><strong>2 pelotas interactivas NUBIK</strong>: se mueven solas y tienen tres modos de funcionamiento.</span></li>
-        <li>${icon('check')} <span><strong>2 cargadores</strong>, uno por pelota.</span></li>
-      </ul>
-      <h2 class="h3" style="margin-top:22px">Especificaciones de cada pelota</h2>
-      <dl class="specs">
-        <div><dt>Tamaño</dt><dd>4 × 4 × 4 cm</dd></div>
-        <div><dt>Peso</dt><dd>50 g</dd></div>
-        <div><dt>Material</dt><dd>Goma</dd></div>
-        <div><dt>Color</dt><dd>Azul</dd></div>
-      </dl>
-      <p class="muted small">Especificaciones informadas por el proveedor. ¿Prefieres pelota + guante quitapelos? <a class="link" href="/combo-nubik">Mira el Combo NUBIK por ${money(combo.price)} COP</a>.</p>
-    </div>
-    <div class="tabs-block">
-      <h2 class="h3">Preguntas frecuentes</h2>
-      ${faqList(faqs(CFG, PRODUCTS).filter((_, i) => [0, 1, 2, 6].includes(i)).concat(faqs(CFG, PRODUCTS).slice(-1)))}
-    </div>`,
-});
 
 views['/carrito'] = () => `
   <div class="wrap">
@@ -700,13 +722,13 @@ function cartHTML(priced, err) {
   const sub = priced ? priced.subtotal : cart.localTotal();
   return `<div class="cart">
     <div class="cart__list">${lines}
-      ${cart.items.some(i => i.id === 'combo-nubik') ? '' : `<div class="notice notice--info">${icon('sparkle')}<span>¿Quieres sumar el guante quitapelos? Solo está disponible en el <a class="link" href="/combo-nubik">Combo NUBIK (${money(combo.price)} COP)</a>.</span></div>`}
+      ${cart.items.some(i => i.id === 'combo-nubik') ? '' : `<div class="notice notice--info">${icon('sparkle')}<span>Con el <a class="link" href="/combo-nubik">Combo NUBIK (${money(combo.price)} COP)</a> llevas también el guante quitapelos y puedes pedir una pelota extra por ${money(EXTRA)} por WhatsApp.</span></div>`}
     </div>
     <aside class="summary" aria-label="Resumen del pedido">
       <h2>Resumen</h2>
       <div class="sumrow"><span>Subtotal</span><strong>${money(sub)} COP</strong></div>
-      <div class="sumrow"><span>Envío</span><span class="free">Gratis</span></div>
-      <div class="sumrow sumrow--total"><span>Total</span><span>${money(priced ? priced.total : sub)} COP</span></div>
+      <div class="sumrow"><span>Envío</span>${shipCell(priced)}</div>
+      <div class="sumrow sumrow--total"><span>Total</span><span>${money(priced ? priced.total : sub + SHIP)} COP</span></div>
       ${err ? `<div class="notice notice--err" style="margin:10px 0">${icon('alert')}<span>${escapeHtml(err)}</span></div>` : ''}
       ${priced ? '' : (err ? '' : `<p class="muted small" style="display:flex;gap:8px;align-items:center"><span class="spinner"></span> Validando precios…</p>`)}
       <a class="btn btn--block" href="/checkout" style="margin-top:12px" ${priced ? '' : 'aria-disabled="true" tabindex="-1"'}>Continuar con el pedido ${icon('arrow')}</a>
@@ -718,9 +740,17 @@ function cartHTML(priced, err) {
 
 function cartWaText(priced, orderId) {
   const lines = cart.items.map(i => `• ${PRODUCTS[i.id].name} x${i.qty} — ${money(PRODUCTS[i.id].price * i.qty)} COP`).join('\n');
-  const total = priced ? priced.total : cart.localTotal();
-  if (orderId === 'pedido') return `Hola NUBIK, quiero hacer este pedido:\n${lines}\nTotal: ${money(total)} COP (envío gratis)\nNombre:\nCiudad:\nDirección de entrega:`;
-  return `Hola NUBIK, ${orderId ? `registré la solicitud ${orderId}` : 'quiero consultar por este pedido'}:\n${lines}\nTotal: ${money(total)} COP (envío gratis)\nMi consulta: `;
+  const total = priced ? priced.total : cart.localTotal() + SHIP;
+  const env = SHIP ? `incluye envío de ${money(SHIP)}` : 'envío gratis';
+  if (orderId === 'pedido') return `Hola NUBIK, quiero hacer este pedido:\n${lines}\nTotal: ${money(total)} COP (${env})\nNombre:\nCiudad:\nDirección de entrega:`;
+  return `Hola NUBIK, ${orderId ? `registré la solicitud ${orderId}` : 'quiero consultar por este pedido'}:\n${lines}\nTotal: ${money(total)} COP (${env})\nMi consulta: `;
+}
+function shipCell(priced) {
+  const v = priced ? priced.shipping : SHIP;
+  return v ? `<span>${money(v)}</span>` : '<span class="free">Gratis</span>';
+}
+function cardWaText(orderId) {
+  return `Hola NUBIK 💙 ${orderId ? `Hice el pedido ${orderId} y quiero` : 'Ya compré y quiero'} la tarjeta para mi gato.\nSe llama: \nEs macho / hembra: \nCómo es (juguetón, dormilón…): \nQué lo hace especial: \nCorreo para recibir la tarjeta: \n(Te adjunto su foto)`;
 }
 
 async function mountCart() {
@@ -776,14 +806,14 @@ async function mountCheckout() {
             <ol class="timeline">
               <li><b>1</b><strong>Envías el resumen por WhatsApp</strong><span>Al número ${CFG.contact.whatsappDisplay}.</span></li>
               <li><b>2</b><strong>Confirmamos datos y pago</strong><span>El pedido queda confirmado solo cuando NUBIK te lo confirme.</span></li>
-              <li><b>3</b><strong>Despacho y entrega</strong><span>Envío gratis. ${CFG.shipping.estimates.map(e => `${e.zone}: ${e.businessDays}`).join(' · ')} (estimado).</span></li>
+              <li><b>3</b><strong>Despacho y entrega</strong><span>${shipText}. ${CFG.shipping.estimates.map(e => `${e.zone}: ${e.businessDays}`).join(' · ')} (estimado).</span></li>
             </ol>
           </div>
         </div>
         <aside class="summary" aria-label="Resumen del pedido">
           <h2>Tu pedido</h2>
           ${priced.lines.map(l => `<div class="sumrow"><span>${l.name} × ${l.qty}</span><strong>${money(l.lineTotal)}</strong></div>`).join('')}
-          <div class="sumrow"><span>Envío</span><span class="free">Gratis</span></div>
+          <div class="sumrow"><span>Envío</span>${shipCell(priced)}</div>
           <div class="sumrow sumrow--total"><span>Total</span><span>${money(priced.total)} COP</span></div>
           <a class="btn btn--block" style="margin-top:14px" href="${waLink(WA, cartWaText(priced, 'pedido'))}" target="_blank" rel="noopener">${icon('chat')} Enviar pedido por WhatsApp</a>
           <p class="muted small" style="margin-top:12px">Abrir WhatsApp no confirma el pedido: la confirmación la recibirás de NUBIK.</p>
@@ -829,7 +859,7 @@ async function mountCheckout() {
       <aside class="summary" aria-label="Resumen del pedido">
         <h2>Tu pedido</h2>
         ${priced.lines.map(l => `<div class="sumrow"><span>${l.name} × ${l.qty}</span><strong>${money(l.lineTotal)}</strong></div>`).join('')}
-        <div class="sumrow"><span>Envío</span><span class="free">Gratis</span></div>
+        <div class="sumrow"><span>Envío</span>${shipCell(priced)}</div>
         <div class="sumrow sumrow--total"><span>Total</span><span>${money(priced.total)} COP</span></div>
         <button class="btn btn--block" type="submit" form="coForm" id="coBtn" style="margin-top:14px">Registrar solicitud de pedido</button>
         <p class="muted small" style="margin-top:12px">Precios validados por la tienda. ${CFG.shipping.estimates.map(e => `${e.zone}: ${e.businessDays}`).join(' · ')} (estimado).</p>
@@ -901,13 +931,20 @@ function showResult(res, waText) {
         <div class="order-id">${escapeHtml(res.id)}</div>
         ${res.transfer ? transferBox(res.transfer) : `<div class="notice" style="margin-bottom:20px">${icon('info')}<span><strong>Tu pedido todavía no está pagado ni confirmado.</strong> ${escapeHtml(res.payment.message)}</span></div>`}
         <ol class="timeline">
-          <li><b>1</b><strong>Solicitud recibida</strong><span>Registramos tus datos y productos (${money(res.priced.total)} COP, envío gratis).</span></li>
+          <li><b>1</b><strong>Solicitud recibida</strong><span>Registramos tus datos y productos (${money(res.priced.total)} COP, envío incluido).</span></li>
           <li><b>2</b><strong>Confirmación y pago</strong><span>${res.transfer ? 'Haz la transferencia y envíanos el comprobante por WhatsApp con tu número de solicitud.' : 'Escríbenos por WhatsApp con tu número de solicitud para coordinar el pago.'}</span></li>
           <li><b>3</b><strong>Preparación y despacho</strong><span>Una vez confirmado el pago, el pedido se prepara según los horarios de despacho.</span></li>
           <li><b>4</b><strong>Transporte y entrega</strong><span>Tiempo estimado: ${CFG.shipping.estimates.map(e => `${e.zone.toLowerCase()} ${e.businessDays}`).join('; ')}.</span></li>
         </ol>
         <a class="btn btn--block" href="${waLink(WA, waText)}" target="_blank" rel="noopener" style="margin-top:12px">${icon('chat')} Continuar por WhatsApp</a>
         <p class="muted small" style="margin-top:14px">Abrir WhatsApp no confirma el pedido: la confirmación la recibirás de NUBIK.</p>
+        <div class="regalo__invite">
+          <p style="font-size:1.6rem;margin:0">🐾</p>
+          <h2 class="h3" style="margin:6px 0">Tenemos un detalle para tu gato</h2>
+          <p>Queremos preparar una tarjeta digital dedicada a él, con su nombre y su foto. Es un regalo de NUBIK incluido con tu compra, sin costo adicional.</p>
+          <a class="btn btn--nube" href="${waLink(WA, cardWaText(res.id))}" target="_blank" rel="noopener">${icon('chat')} Personalizar su tarjeta</a>
+          <p class="muted small" style="margin:10px 0 0">Opcional · Te toma un minuto</p>
+        </div>
       </div>
     </div>`;
   document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
@@ -935,7 +972,7 @@ views['/envios-y-garantias'] = () => {
     <div class="wrap">
       <span class="eyebrow">Envíos, despacho y garantía</span>
       <h1 class="h2" style="max-width:18ch">Así llega tu pedido a casa</h1>
-      <p class="lead">Envío gratis a toda Colombia. Te contamos cada etapa con claridad.</p>
+      <p class="lead">Enviamos a toda Colombia. El envío cuesta ${money(SHIP)} por pedido. Te contamos cada etapa con claridad.</p>
       ${trustCards()}
     </div>
   </section>

@@ -9,12 +9,13 @@
       </div>
       <div>
         <span class="tag">Oferta destacada</span>
-        <h2 class="h2" style="margin-top:18px">Dos formas de cuidar sus momentos</h2>
-        <p class="lead">Juego y cuidado del pelaje en un solo paquete: la pelota interactiva y el guante quitapelos, juntos.</p>
+        <h2 class="h2" style="margin-top:18px">Juego para sus ratos activos, mimos para los tranquilos</h2>
+        <p class="lead">La pelota para cuando tiene energía y el guante para consentirlo mientras le quitas el pelo suelto. Dos formas de decirle que te importa.</p>
         <ul class="incl">
           <li>{% render 'icon', name: 'check' %} 1 pelota interactiva NUBIK + cargador</li>
           <li>{% render 'icon', name: 'check' %} 1 guante quitapelos NUBIK <em>Solo en combo</em></li>
-          <li>{% render 'icon', name: 'truck' %} Envío gratis a toda Colombia</li>
+          <li>{% render 'icon', name: 'truck' %} Envío a toda Colombia: {{ settings.ball_ship_cost }}</li>
+          <li>{% render 'icon', name: 'chat' %} Pelota extra por {{ settings.extra_ball_price }} vía WhatsApp <em>Solo en combo</em></li>
         </ul>
         {%- if combo.id -%}
           <div class="price-row"><span class="price">{{ combo.price | money_without_trailing_zeros }}<small>COP</small></span></div>

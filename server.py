@@ -181,7 +181,7 @@ def price_cart(cfg: dict, items) -> dict:
         if inv.get(k) is not None and inv[k] < n:
             raise OrderError(f"No hay unidades suficientes de {cfg['products'][k]['shortName']}.")
     subtotal = sum(l["lineTotal"] for l in lines)
-    shipping = int(cfg["public"]["shipping"]["customerPrice"])  # siempre 0 para el cliente
+    shipping = int(cfg["public"]["shipping"]["customerPrice"])  # tarifa fija por pedido ($16.000)
     return {"lines": lines, "subtotal": subtotal, "shipping": shipping,
             "total": subtotal + shipping, "currency": "COP"}
 
@@ -264,19 +264,17 @@ def create_order(cfg: dict, body: dict) -> dict:
 # ---------------------------------------------------------------- rutas y SEO
 ROUTES = {
     "/": ("NUBIK | Pelota interactiva para gatos y productos para mascotas en Colombia",
-          "Pelota interactiva para gatos con movimiento automático y tres modos, y el Combo NUBIK con guante quitapelos. Envío gratis en Colombia."),
-    "/productos/pelota-interactiva": ("Pelota interactiva para gatos NUBIK | $59.900 COP, envío gratis",
-          "Juguete para gatos que se mueve solo, con tres modos de funcionamiento. Recargable, cargador incluido en la caja. Envío gratis en Colombia."),
-    "/combo-nubik": ("Combo NUBIK: pelota interactiva + guante quitapelos | $89.900 COP",
-          "Pelota interactiva para gatos y guante quitapelos para perros y gatos en un solo combo. Envío gratis a toda Colombia."),
-    "/duo-pelotas": ("Dúo de pelotas interactivas para gatos NUBIK | $80.000 COP",
-          "Dos pelotas interactivas para gatos que se mueven solas, cada una con su cargador. Ideal para hogares con dos gatos. Envío gratis en Colombia."),
+          "Pelota interactiva para gatos que se mueve sola, y el Combo NUBIK con guante quitapelos. Envíos a toda Colombia."),
+    "/productos/pelota-interactiva": ("Pelota interactiva para gatos NUBIK | $30.000 COP",
+          "Juguete para gatos que se mueve solo, con tres modos de funcionamiento. Recargable, cargador incluido en la caja. Envíos a toda Colombia."),
+    "/combo-nubik": ("Combo NUBIK: pelota interactiva + guante quitapelos | $55.900 COP",
+          "Pelota interactiva para gatos y guante quitapelos para perros y gatos en un solo combo. Envíos a toda Colombia. Pelota extra por $20.000 vía WhatsApp."),
     "/carrito": ("Carrito | NUBIK", "Revisa los productos de tu carrito NUBIK."),
     "/checkout": ("Finalizar pedido | NUBIK", "Registra tu solicitud de pedido NUBIK."),
     "/preguntas-frecuentes": ("Preguntas frecuentes | NUBIK",
           "Resolvemos tus dudas sobre la pelota interactiva, el guante quitapelos, envíos, pagos y garantía."),
     "/envios-y-garantias": ("Envíos, despacho y garantía | NUBIK",
-          "Envío gratis en Colombia, tiempos estimados de entrega, horarios de despacho y cobertura de garantía."),
+          "Envíos a toda Colombia por $16.000, tiempos estimados de entrega, horarios de despacho y cobertura de garantía."),
     "/privacidad": ("Política de privacidad | NUBIK", "Cómo trata NUBIK tus datos personales."),
     "/terminos": ("Términos y condiciones | NUBIK", "Términos y condiciones de compra en NUBIK."),
     "/cambios-y-devoluciones": ("Cambios y devoluciones | NUBIK", "Política de cambios y devoluciones de NUBIK."),
@@ -288,8 +286,9 @@ REDIRECTS = {
     "/guante-quitapelos": "/combo-nubik",
     "/productos": "/#productos",
     "/combo": "/combo-nubik",
-    "/duo": "/duo-pelotas",
-    "/2-pelotas": "/duo-pelotas",
+    "/duo-pelotas": "/combo-nubik",
+    "/duo": "/combo-nubik",
+    "/2-pelotas": "/combo-nubik",
 }
 
 
@@ -300,14 +299,13 @@ def json_ld(cfg: dict, path: str) -> list:
                             "contactType": "customer service", "areaServed": "CO",
                             "availableLanguage": "es"}}
     data = [org] if path == "/" else []
-    pid = {"/productos/pelota-interactiva": "pelota-interactiva", "/combo-nubik": "combo-nubik",
-           "/duo-pelotas": "duo-pelotas"}.get(path)
+    pid = {"/productos/pelota-interactiva": "pelota-interactiva", "/combo-nubik": "combo-nubik"}.get(path)
     if pid:
         p = cfg["products"][pid]
         offer = {"@type": "Offer", "price": str(p["price"]), "priceCurrency": "COP",
                  "url": SITE_URL + p["path"],
                  "shippingDetails": {"@type": "OfferShippingDetails",
-                                     "shippingRate": {"@type": "MonetaryAmount", "value": "0", "currency": "COP"},
+                                     "shippingRate": {"@type": "MonetaryAmount", "value": str(cfg["public"]["shipping"]["customerPrice"]), "currency": "COP"},
                                      "shippingDestination": {"@type": "DefinedRegion", "addressCountry": "CO"}}}
         av = availability_label(cfg, pid)
         if av != "por_confirmar":  # no se declara stock que no ha sido informado

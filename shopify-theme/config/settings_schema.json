@@ -39,14 +39,20 @@
         "default": "combo-nubik"
       },
       {
-        "type": "text",
-        "id": "duo_handle",
-        "label": "Dúo de pelotas",
-        "default": "duo-pelotas"
-      },
-      {
         "type": "header",
         "content": "Envíos"
+      },
+      {
+        "type": "text",
+        "id": "ball_ship_cost",
+        "label": "Costo de envío (se cobra en todos los pedidos)",
+        "default": "$16.000"
+      },
+      {
+        "type": "text",
+        "id": "extra_ball_price",
+        "label": "Precio de la pelota extra por WhatsApp (solo con el combo)",
+        "default": "$20.000"
       },
       {
         "type": "text",

@@ -1,19 +1,16 @@
 {%- assign ball = all_products[settings.ball_handle] -%}
 {%- assign combo = all_products[settings.combo_handle] -%}
-{%- assign duo = all_products[settings.duo_handle] -%}
 <section class="section section--white" id="opciones">
   <div class="wrap center">
     <span class="eyebrow">Elige tu opción</span>
     <h2 class="h2 reveal">¿Cuál es para tu peludo?</h2>
-    {%- if ball.id and combo.id and duo.id -%}
-      {%- assign combo_extra = combo.price | minus: ball.price -%}
-      {%- assign duo_saving = ball.price | times: 2 | minus: duo.price -%}
-      <div class="choices">
+    {%- if ball.id and combo.id -%}
+      <div class="choices choices--2">
         <article class="choice reveal">
           <a class="choice__img" href="{{ ball.url }}">{% render 'img', name: 'pelota-frontal', alt: ball.title, w: 480 %}</a>
           <h3>Pelota interactiva</h3>
           <p class="choice__price">{{ ball.price | money_without_trailing_zeros }} <small>COP</small></p>
-          <p class="choice__text">Una pelota interactiva con su cargador.</p>
+          <p class="choice__text">Una pelota interactiva con su cargador. + Envío {{ settings.ball_ship_cost }}.</p>
           <div class="choice__btns">{% render 'add-button', product: ball, class: 'btn' %}<a class="link" href="{{ ball.url }}">Ver detalles</a></div>
         </article>
         <article class="choice choice--hi reveal">
@@ -21,20 +18,12 @@
           <a class="choice__img" href="{{ combo.url }}">{% render 'img', name: 'combo-nubik', alt: combo.title, w: 480 %}</a>
           <h3>Combo NUBIK</h3>
           <p class="choice__price">{{ combo.price | money_without_trailing_zeros }} <small>COP</small></p>
-          <p class="choice__text">Pelota + guante quitapelos. Por {{ combo_extra | money_without_trailing_zeros }} más que la pelota sola.</p>
+          <p class="choice__text">Pelota + guante quitapelos. Además puedes pedir una pelota extra por {{ settings.extra_ball_price }} por WhatsApp. + Envío {{ settings.ball_ship_cost }}.</p>
           <div class="choice__btns">{% render 'add-button', product: combo, label: 'Quiero el combo', class: 'btn btn--nube' %}<a class="link" href="{{ combo.url }}">Ver detalles</a></div>
-        </article>
-        <article class="choice reveal">
-          <span class="choice__tag">Para 2 gatos</span>
-          <a class="choice__img" href="{{ duo.url }}">{% render 'img', name: 'duo-pelotas', alt: duo.title, w: 480 %}</a>
-          <h3>Dúo de pelotas</h3>
-          <p class="choice__price">{{ duo.price | money_without_trailing_zeros }} <small>COP</small></p>
-          <p class="choice__text">Dos pelotas con su cargador. Ahorras {{ duo_saving | money_without_trailing_zeros }} frente a comprar 2 por separado.</p>
-          <div class="choice__btns">{% render 'add-button', product: duo, label: 'Quiero el dúo', class: 'btn' %}<a class="link" href="{{ duo.url }}">Ver detalles</a></div>
         </article>
       </div>
     {%- else -%}
-      <p class="muted">Crea los productos «{{ settings.ball_handle }}», «{{ settings.combo_handle }}» y «{{ settings.duo_handle }}» para ver esta sección.</p>
+      <p class="muted">Crea los productos «{{ settings.ball_handle }}» y «{{ settings.combo_handle }}» para ver esta sección.</p>
     {%- endif -%}
   </div>
 </section>

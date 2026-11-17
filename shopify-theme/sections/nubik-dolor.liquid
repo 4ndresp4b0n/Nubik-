@@ -1,0 +1,30 @@
+<section class="section section--white dolor" id="te-suena">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">¿Te suena familiar?</span>
+      <h2 class="h2 reveal">Lo quieres muchísimo, pero el día no te alcanza</h2>
+      <p class="lead dolor__lead reveal">Trabajas, estudias, llegas cansado… y él sigue ahí, esperando que alguien juegue con él. Si te has sentido culpable por eso, no eres el único.</p>
+    </div>
+    <div class="cards dolor__cards">
+      <article class="card reveal"><div class="card__ico">{% render 'icon', name: 'clock' %}</div><h3>Duerme todo el día…</h3><p>…y justo cuando tú quieres descansar, a él le dan ganas de correr por toda la casa.</p></article>
+      <article class="card reveal"><div class="card__ico">{% render 'icon', name: 'box' %}</div><h3>Juguetes olvidados</h3><p>Le compras juguetes, los mira un rato y después se quedan quietos debajo del sofá.</p></article>
+      <article class="card reveal"><div class="card__ico">{% render 'icon', name: 'chat' %}</div><h3>Esa mirada</h3><p>Te ve llegar, te sigue por la casa y tú sabes que te está pidiendo un rato de juego.</p></article>
+    </div>
+    <div class="dolor__answer reveal">
+      <div>
+        <span class="tag">No eres mal dueño</span>
+        <h3 class="dolor__title">Solo necesitas una ayudita</h3>
+        <p>La pelota NUBIK se mueve sola y tiene tres modos, así el juego no depende solo de ti. Tú la enciendes y ella hace el resto.</p>
+        <p class="muted small">¿Al principio no le hace caso? Es normal. Escríbenos por WhatsApp y te contamos cómo presentársela.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn" href="{{ routes.root_url | append: '/' | replace: '//', '/' }}products/{{ settings.ball_handle }}">Conocer la pelota</a>
+        <a class="btn btn--ghost" href="{{ routes.root_url | append: '/' | replace: '//', '/' }}products/{{ settings.combo_handle }}">Ver el combo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "¿Te suena familiar?", "settings": [], "presets": [{ "name": "¿Te suena familiar?" }] }
+{% endschema %}

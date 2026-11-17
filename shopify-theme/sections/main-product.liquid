@@ -1,13 +1,12 @@
 {%- assign ball = all_products[settings.ball_handle] -%}
 {%- assign combo = all_products[settings.combo_handle] -%}
-{%- assign duo = all_products[settings.duo_handle] -%}
 {%- assign variant = product.selected_or_first_available_variant -%}
 {%- case product.handle -%}
   {%- when settings.combo_handle -%}{%- assign eyebrow = 'Oferta destacada · Juego + cuidado' -%}{%- assign add_label = 'Quiero el combo' -%}
-  {%- when settings.duo_handle -%}{%- assign eyebrow = 'Para hogares con 2 gatos' -%}{%- assign add_label = 'Quiero el dúo' -%}
   {%- when settings.ball_handle -%}{%- assign eyebrow = 'Juguete interactivo para gatos' -%}{%- assign add_label = 'Añadir al carrito' -%}
   {%- else -%}{%- assign eyebrow = product.type -%}{%- assign add_label = 'Añadir al carrito' -%}
 {%- endcase -%}
+{%- assign ship_label = 'Envío ' | append: settings.ball_ship_cost -%}
 
 <div class="wrap">
   <nav class="crumbs" aria-label="Ruta de navegación"><a href="{{ routes.root_url }}">Inicio</a> / <span>{{ product.title }}</span></nav>
@@ -17,7 +16,7 @@
       <h1>{{ product.title }}</h1>
       <div class="price-row">
         <span class="price">{{ variant.price | money_without_trailing_zeros }}<small>COP</small></span>
-        <span class="ship-note">{% render 'icon', name: 'truck' %} Envío gratis</span>
+        <span class="ship-note">{% render 'icon', name: 'truck' %} {{ ship_label }}</span>
       </div>
       {%- if variant.available -%}<span class="stock stock--ok">Disponible</span>{%- else -%}<span class="stock">Agotado temporalmente</span>{%- endif -%}
     </div>
@@ -50,33 +49,26 @@
       {%- endform -%}
 
       <div class="perks">
-        <div>{% render 'icon', name: 'truck' %}<span><strong>Envío gratis.</strong> Ciudades principales: {{ settings.ship_main }} · Resto del país: {{ settings.ship_rest }} (estimado).</span></div>
-        <div>{% render 'icon', name: 'card' %}<span><strong>Pago por transferencia bancaria.</strong> Sin pago contra entrega.</span></div>
+        <div>{% render 'icon', name: 'truck' %}<span><strong>{{ ship_label }}.</strong> Ciudades principales: {{ settings.ship_main }} · Resto del país: {{ settings.ship_rest }} (estimado).</span></div>
+        {%- if product.handle == settings.combo_handle -%}<div>{% render 'icon', name: 'chat' %}<span><strong>Pelota extra por {{ settings.extra_ball_price }}.</strong> Solo con el combo: después de tu compra, pídela por WhatsApp.</span></div>{%- endif -%}
+        <div>{% render 'icon', name: 'card' %}<span><strong>Pago por transferencia o tarjeta.</strong> Sin pago contra entrega.</span></div>
       </div>
 
-      {%- if product.handle == settings.ball_handle and combo.id and duo.id -%}
-        {%- assign combo_extra = combo.price | minus: product.price -%}
-        {%- assign duo_saving = product.price | times: 2 | minus: duo.price -%}
+      {%- if product.handle == settings.ball_handle and combo.id -%}
         <div class="upsell">
-          <a class="upsell__card" href="{{ combo.url }}">{% render 'img', name: 'combo-nubik', alt: '', w: 480, sizes: '72px' %}<span><strong>Combo NUBIK · {{ combo.price | money_without_trailing_zeros }}</strong><span>Por {{ combo_extra | money_without_trailing_zeros }} más llevas también el guante quitapelos.</span></span>{% render 'icon', name: 'arrow' %}</a>
-          <a class="upsell__card" href="{{ duo.url }}">{% render 'img', name: 'duo-pelotas', alt: '', w: 480, sizes: '72px' %}<span><strong>Dúo de pelotas · {{ duo.price | money_without_trailing_zeros }}</strong><span>¿Tienes dos gatos? Ahorras {{ duo_saving | money_without_trailing_zeros }} frente a comprar 2 por separado.</span></span>{% render 'icon', name: 'arrow' %}</a>
+          <a class="upsell__card" href="{{ combo.url }}">{% render 'img', name: 'combo-nubik', alt: '', w: 480, sizes: '72px' %}<span><strong>Combo NUBIK · {{ combo.price | money_without_trailing_zeros }}</strong><span>Llevas también el guante quitapelos y puedes pedir una pelota extra por {{ settings.extra_ball_price }} por WhatsApp.</span></span>{% render 'icon', name: 'arrow' %}</a>
         </div>
-      {%- endif -%}
-      {%- if product.handle == settings.duo_handle and ball.id -%}
-        {%- assign two = ball.price | times: 2 -%}
-        {%- assign duo_saving = two | minus: product.price -%}
-        <div class="notice notice--info">{% render 'icon', name: 'sparkle' %}<span><strong>Ahorras {{ duo_saving | money_without_trailing_zeros }}</strong> frente a comprar 2 pelotas por separado ({{ two | money_without_trailing_zeros }} COP).</span></div>
       {%- endif -%}
 
       <div class="tabs-block product-desc">{{ product.description }}</div>
 
-      <p class="muted small" style="margin-top:18px"><a class="link" href="{{ routes.root_url }}pages/preguntas-frecuentes">Ver preguntas frecuentes</a> · <a class="link" href="{{ routes.root_url }}pages/envios-y-garantias">Envíos y garantía</a></p>
+      <p class="muted small" style="margin-top:18px"><a class="link" href="{{ routes.root_url | append: '/' | replace: '//', '/' }}pages/preguntas-frecuentes">Ver preguntas frecuentes</a> · <a class="link" href="{{ routes.root_url | append: '/' | replace: '//', '/' }}pages/envios-y-garantias">Envíos y garantía</a></p>
     </div>
   </div>
 </div>
 
 <div class="stickybuy" aria-hidden="true">
-  <div class="stickybuy__txt"><strong>{{ product.title }}</strong><span>{{ variant.price | money_without_trailing_zeros }} COP · Envío gratis</span></div>
+  <div class="stickybuy__txt"><strong>{{ product.title }}</strong><span>{{ variant.price | money_without_trailing_zeros }} COP · {{ ship_label }}</span></div>
   <form method="post" action="{{ routes.cart_add_url }}" data-add-form>
     <input type="hidden" name="id" value="{{ variant.id }}"><input type="hidden" name="quantity" value="1">
     <button class="btn btn--sm" type="submit" tabindex="-1"{% unless variant.available %} disabled{% endunless %}>{% render 'icon', name: 'bag' %} {% if product.handle == settings.ball_handle %}Añadir{% else %}{{ add_label }}{% endif %}</button>

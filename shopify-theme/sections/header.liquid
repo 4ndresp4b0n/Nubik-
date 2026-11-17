@@ -1,4 +1,4 @@
-{%- assign home = routes.root_url -%}
+{%- assign home = routes.root_url | append: '/' | replace: '//', '/' -%}
 {%- assign combo_url = home | append: 'products/' | append: settings.combo_handle -%}
 <header class="nav" id="nav">
   <div class="wrap nav__in">
@@ -8,8 +8,9 @@
         <li><a href="{{ home }}"{% if template.name == 'index' %} aria-current="page"{% endif %}>Inicio</a></li>
         <li><a href="{{ home }}#opciones">Productos</a></li>
         <li><a href="{{ combo_url }}"{% if product.handle == settings.combo_handle %} aria-current="page"{% endif %}>Combo</a></li>
-        <li><a href="{{ home }}pages/envios-y-garantias"{% if page.handle == 'envios-y-garantias' %} aria-current="page"{% endif %}>Envíos y garantías</a></li>
-        <li><a href="{{ home }}pages/preguntas-frecuentes"{% if page.handle == 'preguntas-frecuentes' %} aria-current="page"{% endif %}>Preguntas frecuentes</a></li>
+        <li><a href="{{ home }}pages/envios-y-garantias"{% if page.handle == 'envios-y-garantias' %} aria-current="page"{% endif %}>Envíos</a></li>
+        <li><a href="{{ home }}pages/preguntas-frecuentes"{% if page.handle == 'preguntas-frecuentes' %} aria-current="page"{% endif %}>Preguntas</a></li>
+        <li><a href="{{ home }}pages/tarjeta"{% if page.handle == 'tarjeta' %} aria-current="page"{% endif %}>Tarjeta para tu gato</a></li>
       </ul>
     </nav>
     <div class="nav__actions">
@@ -28,6 +29,7 @@
     <a class="dl" href="{{ combo_url }}">Combo</a>
     <a class="dl" href="{{ home }}pages/envios-y-garantias">Envíos y garantías</a>
     <a class="dl" href="{{ home }}pages/preguntas-frecuentes">Preguntas frecuentes</a>
+    <a class="dl" href="{{ home }}pages/tarjeta">Tarjeta para tu gato 🐾</a>
     <a class="dl" href="{{ routes.cart_url }}">Carrito</a>
     <a class="btn btn--nube btn--block" style="margin-top:auto" href="{% render 'wa-link' %}" target="_blank" rel="noopener">{% render 'icon', name: 'chat' %} Escríbenos por WhatsApp</a>
   </div>

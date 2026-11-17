@@ -1,4 +1,4 @@
-{%- assign home = routes.root_url -%}
+{%- assign home = routes.root_url | append: '/' | replace: '//', '/' -%}
 <footer class="footer" id="footer">
   <div class="wrap">
     <div class="footer__grid">
@@ -8,12 +8,12 @@
           <a class="brand" href="{{ home }}" aria-label="NUBIK, ir al inicio">{% render 'logo', awake: true %}</a>
         </div>
         <p class="footer__slogan">Suave como una nube, feliz como un gato.</p>
-        <p class="small">Productos para gatos y perros con envío gratis en Colombia.</p>
+        <p class="small">Productos para gatos y perros. Envíos a toda Colombia.</p>
       </div>
       <div><h4>Tienda</h4><ul>
         <li><a href="{{ home }}products/{{ settings.ball_handle }}">Pelota interactiva</a></li>
         <li><a href="{{ home }}products/{{ settings.combo_handle }}">Combo NUBIK</a></li>
-        <li><a href="{{ home }}products/{{ settings.duo_handle }}">Dúo de pelotas</a></li>
+        <li><a href="{{ home }}pages/tarjeta">¿Ya compraste? Crea la tarjeta de tu gato</a></li>
         <li><a href="{{ routes.cart_url }}">Carrito</a></li></ul></div>
       <div><h4>Ayuda</h4><ul>
         <li><a href="{{ home }}pages/envios-y-garantias">Envíos</a></li>
@@ -28,7 +28,13 @@
         {%- endfor -%}
       </ul></div>
     </div>
-    <div class="footer__bottom"><span>© {{ 'now' | date: '%Y' }} NUBIK · Colombia</span><span>Envío gratis · Sin pago contra entrega</span></div>
+    {%- capture extra_txt -%}Hola NUBIK, compré el Combo NUBIK y quiero pedir la pelota extra por {{ settings.extra_ball_price }}. Mi número de pedido es: {%- endcapture -%}
+    <a class="footer__extra" href="{% render 'wa-link', text: extra_txt %}" target="_blank" rel="noopener">
+      <span class="footer__extra-ico">{% render 'icon', name: 'sparkle' %}</span>
+      <span><strong>¿Compraste el Combo NUBIK?</strong> Pide una pelota extra por solo {{ settings.extra_ball_price }} escribiéndonos por WhatsApp.</span>
+      <span class="footer__extra-cta">{% render 'icon', name: 'chat' %} Pedirla</span>
+    </a>
+    <div class="footer__bottom"><span>© {{ 'now' | date: '%Y' }} NUBIK · Colombia</span><span>Envíos a toda Colombia · Sin pago contra entrega</span></div>
   </div>
 </footer>
 

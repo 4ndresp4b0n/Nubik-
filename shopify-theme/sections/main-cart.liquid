@@ -4,11 +4,11 @@
   {%- if cart.item_count == 0 -%}
     <div class="empty" style="margin-bottom:80px">{% render 'icon', name: 'bag' %}<h2 class="h3">Tu carrito está vacío</h2>
       <p class="muted">Empieza por nuestra oferta destacada.</p>
-      <div class="btn-row" style="justify-content:center"><a class="btn" href="{{ routes.root_url }}products/{{ settings.combo_handle }}">Ver el combo</a><a class="btn btn--ghost" href="{{ routes.root_url }}products/{{ settings.ball_handle }}">Ver la pelota</a></div></div>
+      <div class="btn-row" style="justify-content:center"><a class="btn" href="{{ routes.root_url | append: '/' | replace: '//', '/' }}products/{{ settings.combo_handle }}">Ver el combo</a><a class="btn btn--ghost" href="{{ routes.root_url | append: '/' | replace: '//', '/' }}products/{{ settings.ball_handle }}">Ver la pelota</a></div></div>
   {%- else -%}
   <form action="{{ routes.cart_url }}" method="post" id="cartForm" class="cart" novalidate>
     <div class="cart__list">
-      {%- assign has_combo = false -%}
+      {%- assign has_combo = false -%}{%- assign has_ball = true -%}
       {%- for item in cart.items -%}
         {%- if item.product.handle == settings.combo_handle -%}{%- assign has_combo = true -%}{%- endif -%}
         <article class="line">
@@ -17,7 +17,6 @@
             <div class="line__meta">{{ item.final_price | money_without_trailing_zeros }} COP c/u
               {%- case item.product.handle -%}
                 {%- when settings.combo_handle -%} · Incluye pelota + cargador y guante quitapelos
-                {%- when settings.duo_handle -%} · Incluye 2 pelotas, cada una con su cargador
                 {%- else -%} · Cargador incluido
               {%- endcase -%}</div>
             <div class="line__ctrl">
@@ -28,21 +27,22 @@
         </article>
       {%- endfor -%}
       {%- unless has_combo or combo.id == nil -%}
-        <div class="notice notice--info">{% render 'icon', name: 'sparkle' %}<span>¿Quieres sumar el guante quitapelos? Solo está disponible en el <a class="link" href="{{ combo.url }}">Combo NUBIK ({{ combo.price | money_without_trailing_zeros }} COP)</a>.</span></div>
+        <div class="notice notice--info">{% render 'icon', name: 'sparkle' %}<span>Con el <a class="link" href="{{ combo.url }}">Combo NUBIK ({{ combo.price | money_without_trailing_zeros }} COP)</a> llevas también el guante quitapelos y puedes pedir una pelota extra por {{ settings.extra_ball_price }} por WhatsApp.</span></div>
       {%- endunless -%}
       <noscript><button class="btn btn--ghost" type="submit" name="update">Actualizar carrito</button></noscript>
     </div>
     <aside class="summary" aria-label="Resumen del pedido">
       <h2>Resumen</h2>
       <div class="sumrow"><span>Subtotal</span><strong>{{ cart.total_price | money_without_trailing_zeros }} COP</strong></div>
-      <div class="sumrow"><span>Envío</span><span class="free">Gratis</span></div>
-      <div class="sumrow sumrow--total"><span>Total</span><span>{{ cart.total_price | money_without_trailing_zeros }} COP</span></div>
+      <div class="sumrow"><span>Envío</span>{%- if has_ball -%}<span>{{ settings.ball_ship_cost }}</span>{%- else -%}<span class="free">Gratis</span>{%- endif -%}</div>
+      <div class="sumrow sumrow--total"><span>Total{% if has_ball %} aprox.{% endif %}</span><span>{%- if has_ball -%}{%- assign ship_cents = settings.ball_ship_cost | remove: '$' | remove: '.' | remove: ',' | strip | times: 100 -%}{{ cart.total_price | plus: ship_cents | money_without_trailing_zeros }}{%- else -%}{{ cart.total_price | money_without_trailing_zeros }}{%- endif -%} COP</span></div>
+      {%- if has_ball -%}<p class="muted small">El envío se confirma al finalizar la compra.</p>{%- endif -%}
       <button class="btn btn--block" type="submit" name="checkout" style="margin-top:12px">Finalizar compra {% render 'icon', name: 'arrow' %}</button>
       {%- capture wa_text -%}Hola NUBIK, quiero consultar por este pedido:{% for item in cart.items %}
 • {{ item.product.title }} x{{ item.quantity }}{% endfor %}
-Total: {{ cart.total_price | money_without_trailing_zeros }} COP (envío gratis){%- endcapture -%}
+Subtotal: {{ cart.total_price | money_without_trailing_zeros }} COP + envío {{ settings.ball_ship_cost }}{%- endcapture -%}
       <a class="btn btn--ghost btn--block" style="margin-top:10px" href="{% render 'wa-link', text: wa_text %}" target="_blank" rel="noopener">{% render 'icon', name: 'chat' %} Consultar por WhatsApp</a>
-      <p class="muted small" style="margin-top:14px">Pagas por transferencia bancaria: al finalizar la compra verás los datos de la cuenta. Tu pedido se confirma cuando NUBIK verifica el pago. No ofrecemos pago contra entrega.</p>
+      <p class="muted small" style="margin-top:14px">Pagas por transferencia bancaria o con tarjeta. Si eliges transferencia, al finalizar la compra verás los datos de la cuenta. Tu pedido se confirma cuando NUBIK verifica el pago. No ofrecemos pago contra entrega.</p>
     </aside>
   </form>
   {%- endif -%}

@@ -50,14 +50,7 @@
           "type": "question",
           "settings": {
             "question": "¿Qué incluye el combo?",
-            "answer": "<p>El Combo NUBIK incluye una pelota interactiva (con su cargador) y un guante quitapelos, por $89.900 COP con envío gratis. La pelota también está disponible sola por $59.900 COP.</p>"
-          }
-        },
-        "q7": {
-          "type": "question",
-          "settings": {
-            "question": "¿Qué incluye el Dúo de pelotas?",
-            "answer": "<p>Dos pelotas interactivas NUBIK, cada una con su cargador, por $80.000 COP con envío gratis. Es ideal si tienes dos gatos o si quieres tener una pelota lista mientras la otra se carga.</p>"
+            "answer": "<p>El Combo NUBIK incluye una pelota interactiva (con su cargador) y un guante quitapelos, por $55.900 COP más $16.000 de envío. Si compras el combo, puedes pedir una pelota extra por $20.000 escribiéndonos por WhatsApp. La pelota también está disponible sola por $30.000 COP más $16.000 de envío.</p>"
           }
         },
         "q8": {
@@ -71,14 +64,14 @@
           "type": "question",
           "settings": {
             "question": "¿El envío tiene algún costo?",
-            "answer": "<p>No. El envío es gratis para ti: NUBIK asume su costo.</p>"
+            "answer": "<p>Sí. El envío cuesta $16.000 COP por pedido a toda Colombia y lo ves sumado antes de pagar.</p>"
           }
         },
         "q10": {
           "type": "question",
           "settings": {
             "question": "¿Qué medios de pago aceptan?",
-            "answer": "<p>Por ahora recibimos pagos por <strong>transferencia bancaria</strong>: al finalizar la compra verás los datos de la cuenta y el valor exacto. Tu pedido se confirma cuando verificamos el pago. No ofrecemos pago contra entrega.</p>"
+            "answer": "<p>Puedes pagar con <strong>transferencia bancaria</strong> o con <strong>tarjeta</strong>, según los medios que aparecen al finalizar la compra. Si eliges transferencia, verás los datos de la cuenta al confirmar tu pedido, y lo despachamos cuando verificamos el pago. No ofrecemos pago contra entrega.</p>"
           }
         },
         "q11": {
@@ -103,7 +96,6 @@
         "q4",
         "q5",
         "q6",
-        "q7",
         "q8",
         "q9",
         "q10",

@@ -12,7 +12,7 @@
       {%- endfor -%}
     </div>
     <div class="btn-row" style="justify-content:center;margin-top:28px">
-      {%- if section.settings.show_all_link -%}<a class="btn btn--ghost" href="{{ routes.root_url }}pages/preguntas-frecuentes">Ver todas las preguntas</a>{%- endif -%}
+      {%- if section.settings.show_all_link -%}<a class="btn btn--ghost" href="{{ routes.root_url | append: '/' | replace: '//', '/' }}pages/preguntas-frecuentes">Ver todas las preguntas</a>{%- endif -%}
       <a class="btn btn--nube" href="{% render 'wa-link' %}" target="_blank" rel="noopener">{% render 'icon', name: 'chat' %} Pregúntanos</a>
     </div>
   </div>

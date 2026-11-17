@@ -29,26 +29,16 @@ CUSTOMER = {"nombre": "Cliente Prueba", "celular": "3001234567", "email": "", "d
 class Reglas(unittest.TestCase):
     def test_precios(self):
         r = server.price_cart(CFG, [{"id": "pelota-interactiva", "qty": 1}])
-        self.assertEqual(r["total"], 59900)
+        self.assertEqual((r["subtotal"], r["shipping"], r["total"]), (30000, 16000, 46000))
         r = server.price_cart(CFG, [{"id": "combo-nubik", "qty": 1}])
-        self.assertEqual(r["total"], 89900)
+        self.assertEqual((r["subtotal"], r["shipping"], r["total"]), (55900, 16000, 71900))
 
-    def test_duo_de_pelotas(self):
-        r = server.price_cart(CFG, [{"id": "duo-pelotas", "qty": 1}])
-        self.assertEqual(r["total"], 80000)
-        self.assertEqual(server.component_units(CFG, "duo-pelotas", 2), {"pelota-interactiva": 4})
-        m = server.internal_margin(CFG, r)
-        self.assertEqual(m["productCost"], 2 * int(FAKE["COSTO_PELOTA"]))
-        cfg = json.loads(json.dumps(CFG))
-        cfg["internal"]["inventory"] = {"pelota-interactiva": 3, "guante-quitapelos": 5}
-        with self.assertRaises(server.OrderError):  # 2 dúos = 4 pelotas > 3
-            server.price_cart(cfg, [{"id": "duo-pelotas", "qty": 2}])
 
     def test_subtotales_y_total(self):
         r = server.price_cart(CFG, [{"id": "pelota-interactiva", "qty": 2}, {"id": "combo-nubik", "qty": 3}])
-        self.assertEqual(r["subtotal"], 2 * 59900 + 3 * 89900)
-        self.assertEqual(r["shipping"], 0)
-        self.assertEqual(r["total"], r["subtotal"])  # el flete interno no se suma
+        self.assertEqual(r["subtotal"], 2 * 30000 + 3 * 55900)
+        self.assertEqual(r["shipping"], 16000)  # tarifa fija por pedido, no por unidad
+        self.assertEqual(r["total"], r["subtotal"] + 16000)
 
     def test_lineas_duplicadas_se_agrupan(self):
         r = server.price_cart(CFG, [{"id": "combo-nubik", "qty": 1}, {"id": "combo-nubik", "qty": 2}])
@@ -63,7 +53,7 @@ class Reglas(unittest.TestCase):
 
     def test_precio_del_navegador_se_ignora(self):
         r = server.price_cart(CFG, [{"id": "combo-nubik", "qty": 1, "price": 1, "unitPrice": 1}])
-        self.assertEqual(r["total"], 89900)
+        self.assertEqual(r["total"], 71900)
 
     def test_cantidades_invalidas(self):
         for q in (0, -1, 1.5, "2", True, 11):
@@ -85,9 +75,9 @@ class Reglas(unittest.TestCase):
 
     def test_margenes_internos(self):
         m = server.internal_margin(CFG, server.price_cart(CFG, [{"id": "pelota-interactiva", "qty": 1}]))
-        self.assertEqual(m["marginBeforeOtherExpenses"], 59900 - 10101 - 3030)
+        self.assertEqual(m["marginBeforeOtherExpenses"], 46000 - 10101 - 3030)
         m = server.internal_margin(CFG, server.price_cart(CFG, [{"id": "combo-nubik", "qty": 1}]))
-        self.assertEqual((m["productCost"], m["marginBeforeOtherExpenses"]), (10101 + 20202, 89900 - 10101 - 20202 - 3030))
+        self.assertEqual((m["productCost"], m["marginBeforeOtherExpenses"]), (10101 + 20202, 71900 - 10101 - 20202 - 3030))
         sin_costos = json.loads(json.dumps(CFG))
         sin_costos["internal"]["supplierCosts"]["guante-quitapelos"] = None
         self.assertEqual(server.internal_margin(sin_costos, server.price_cart(CFG, [{"id": "combo-nubik", "qty": 1}])), {})
@@ -109,7 +99,7 @@ class Reglas(unittest.TestCase):
         cfg["bankTransfer"].update(bank="Banco Prueba", holder="Titular Prueba")
         self.assertTrue(server.public_bootstrap(cfg)["config"]["payments"]["transferReady"])
         r = server.create_order(cfg, {"items": [{"id": "combo-nubik", "qty": 1}], "customer": CUSTOMER, "paymentMethod": "transferencia"})
-        self.assertEqual(r["transfer"]["amount"], 89900)
+        self.assertEqual(r["transfer"]["amount"], 71900)
         self.assertEqual(r["transfer"]["reference"], r["id"])
         self.assertEqual(r["paymentStatus"], "pendiente")  # nunca se marca pagado solo
         r = server.create_order(cfg, {"items": [{"id": "combo-nubik", "qty": 1}], "customer": CUSTOMER, "paymentMethod": "tarjeta"})
@@ -162,11 +152,16 @@ class API(unittest.TestCase):
             for secreto in (FAKE["COSTO_PELOTA"], FAKE["COSTO_GUANTE"], FAKE["FLETE_ESTIMADO"], FAKE["BANK_ACCOUNT_NUMBER"]):
                 self.assertNotIn(secreto, body, (p, secreto))
 
-    def test_ruta_duo(self):
-        s, body, _ = self.req("/duo-pelotas")
-        self.assertEqual(s, 200)
-        self.assertIn('"price": "80000"', body)
-        self.assertIn("Dúo de pelotas", body)
+    def test_duo_retirado_redirige_al_combo(self):
+        self.assertNotIn("duo-pelotas", CFG["products"])
+        class NoRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self, *a, **k): return None
+        try:
+            urllib.request.build_opener(NoRedirect).open(self.base + "/duo-pelotas")
+            self.fail("esperaba redirección")
+        except urllib.error.HTTPError as e:
+            self.assertEqual(e.code, 301)
+            self.assertEqual(e.headers["Location"], "/combo-nubik")
 
     def test_404(self):
         self.assertEqual(self.req("/no-existe")[0], 404)
@@ -184,7 +179,8 @@ class API(unittest.TestCase):
 
     def test_seo_producto(self):
         _, body, _ = self.req("/productos/pelota-interactiva")
-        self.assertIn('"price": "59900"', body)
+        self.assertIn('"price": "30000"', body)
+        self.assertIn('"value": "16000"', body)
         self.assertIn('og:title', body)
         stock = CFG["internal"]["inventory"].get("pelota-interactiva")
         if stock is None:
@@ -196,7 +192,7 @@ class API(unittest.TestCase):
     def test_quote_y_guante(self):
         s, body, _ = self.req("/api/cart/quote", {"items": [{"id": "combo-nubik", "qty": 2}]})
         self.assertEqual(s, 200)
-        self.assertEqual(json.loads(body)["total"], 179800)
+        self.assertEqual(json.loads(body)["total"], 2 * 55900 + 16000)
         s, body, _ = self.req("/api/cart/quote", {"items": [{"id": "guante-quitapelos", "qty": 1}]})
         self.assertEqual(s, 400)
         self.assertIn("Combo", json.loads(body)["error"])
@@ -209,7 +205,7 @@ class API(unittest.TestCase):
         self.assertTrue(r["id"].startswith("NBK-"))
         self.assertEqual(r["paymentStatus"], "pendiente")
         self.assertFalse(r["payment"]["enabled"])
-        self.assertEqual(r["priced"]["total"], 59900)
+        self.assertEqual(r["priced"]["total"], 46000)
         self.assertNotIn("internal", r)
         saved = (Path(TMP) / "orders.jsonl").read_text(encoding="utf-8")
         self.assertIn(r["id"], saved)
@@ -316,7 +312,7 @@ class API(unittest.TestCase):
             self.assertTrue(admin.notify_new_order(order, "https://nubik.test", background=False))
             msg = sent[-1]
             self.assertIn(r["id"], msg["Subject"])
-            self.assertIn("$119.800", msg.get_content())
+            self.assertIn("$76.000", msg.get_content())  # 2 pelotas + envío
             self.assertNotIn("Margen", msg.get_content())
         finally:
             admin.smtplib.SMTP_SSL = old
