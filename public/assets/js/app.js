@@ -646,7 +646,7 @@ views['/combo-nubik'] = () => productPage({
   title: 'Combo NUBIK: pelota interactiva + guante quitapelos',
   intro: 'Dos formas de cuidar sus momentos: la pelota interactiva para jugar y el guante quitapelos para ayudar a retirar el pelo suelto de perros y gatos.',
   gallery: [
-    ['combo-nubik', 'Combo NUBIK: pelota interactiva y guante quitapelos'],
+    ['combo-nubik-v2', 'Combo NUBIK: pelota interactiva y guante quitapelos'],
     ['vida-gato-guante', 'Gato relajado mientras lo cepillan con el guante quitapelos NUBIK', true],
     ['vida-gato-pelota', 'Gato atrapando la pelota interactiva NUBIK', true],
     ['vida-perro-guante', 'Perro cepillado con el guante quitapelos NUBIK', true],
